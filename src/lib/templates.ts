@@ -143,7 +143,7 @@ export function buildEmailHtml(ctx: TemplateContext): string {
     <!-- Footer -->
     <div style="text-align:center;margin-top:8px;padding:16px;color:#94a3b8;font-size:11px;line-height:1.6;">
       © 2026 크롬북 한 대, 공정한 교육기회<br/>
-      몽골 울란바토르 UBMK 학교 후원 프로젝트
+      몽골 울란바타르 UBMK 학교 후원 프로젝트
     </div>
 
   </div>

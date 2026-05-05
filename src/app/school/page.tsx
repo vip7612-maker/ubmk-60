@@ -19,10 +19,10 @@ export default async function SchoolPage() {
             🏫 UBMK School
           </span>
           <h1 className="text-4xl md:text-5xl font-extrabold mt-4 mb-3">
-            울란바토르 미션 스쿨,<br /><span className="gradient-text">UBMK</span>
+            울란바타르 미션 스쿨,<br /><span className="gradient-text">UBMK</span>
           </h1>
           <p className="text-ink-500 text-lg max-w-[640px]">
-            몽골 울란바토르 바양주르흐 구에 위치한 UBMK는<br />
+            몽골 울란바타르 바양주르흐 구에 위치한 UBMK는<br />
             20년 넘게 아이들의 꿈을 키워온 선교 학교입니다.
           </p>
         </div>

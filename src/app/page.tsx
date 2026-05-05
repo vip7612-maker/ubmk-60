@@ -37,7 +37,7 @@ export default async function HomePage() {
         <div className="relative z-10 h-full max-w-[1240px] mx-auto px-6 flex flex-col justify-end pb-20 text-white">
           <span className="inline-flex items-center gap-2 text-sm font-bold tracking-[0.15em] uppercase bg-white/15 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full mb-6 w-fit animate-fade-up">
             <span className="w-2 h-2 rounded-full bg-amber-400 pulse-dot" style={{ boxShadow: '0 0 12px #fbbf24' }} />
-            몽골 울란바토르 · UBMK 학교
+            몽골 울란바타르 · UBMK 학교
           </span>
           <h1 className="text-[clamp(1.6rem,6vw,5.5rem)] font-display font-extrabold mb-6 tracking-tighter animate-fade-up delay-1 text-white whitespace-nowrap">
             크롬북 한 대, <span className="text-amber-400">공정한 교육기회</span>
@@ -148,7 +148,7 @@ export default async function HomePage() {
             UBMK 학교
           </span>
           <h2 className="text-4xl font-extrabold mt-4 mb-2">20년간 이어진 교육의 현장</h2>
-          <p className="text-ink-500 text-lg max-w-[640px] mx-auto">울란바토르 바양주르흐 구에 위치한 UBMK는 1,200명 이상의 졸업생을 배출했습니다.</p>
+          <p className="text-ink-500 text-lg max-w-[640px] mx-auto">울란바타르 바양주르흐 구에 위치한 UBMK는 1,200명 이상의 졸업생을 배출했습니다.</p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12" style={{ gridAutoRows: '200px' }}>
