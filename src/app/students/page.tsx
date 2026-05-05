@@ -19,7 +19,7 @@ export default async function StudentsPage() {
       <section className="py-16 px-6" style={{ background: 'linear-gradient(180deg, #eff6ff 0%, white 100%)' }}>
         <div className="max-w-[1240px] mx-auto">
           <span className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.1em] uppercase text-blue-700 bg-blue-50 px-3.5 py-1.5 rounded-full">
-            60명의 꿈, 60장의 손편지
+            60명의 꿈
           </span>
           <h1 className="text-4xl md:text-5xl font-extrabold mt-4 mb-3">한 명의 학생을 선택해<br />그의 첫 후원자가 되어주세요</h1>
           <p className="text-ink-500 text-lg max-w-[640px]">

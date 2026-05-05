@@ -39,9 +39,8 @@ export default async function HomePage() {
             <span className="w-2 h-2 rounded-full bg-amber-400 pulse-dot" style={{ boxShadow: '0 0 12px #fbbf24' }} />
             몽골 울란바토르 · UBMK 학교
           </span>
-          <h1 className="text-[clamp(2.5rem,6vw,5rem)] font-display font-extrabold mb-6 max-w-[880px] tracking-tighter animate-fade-up delay-1 text-white">
-            크롬북 한 대,<br />
-            <span className="text-amber-400">공정한 교육기회.</span>
+          <h1 className="text-[clamp(1.6rem,6vw,5.5rem)] font-display font-extrabold mb-6 tracking-tighter animate-fade-up delay-1 text-white whitespace-nowrap">
+            크롬북 한 대, <span className="text-amber-400">공정한 교육기회</span>
           </h1>
           <p className="text-xl text-white/85 max-w-[620px] mb-10 leading-relaxed animate-fade-up delay-2">
             몽골 UBMK 학교의 중·고등학생 60명에게<br />
