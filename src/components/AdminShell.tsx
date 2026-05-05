@@ -32,9 +32,9 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
                 <path d="M2 19h20"/>
               </svg>
             </span>
-            <div className="leading-tight">
-              <div className="font-extrabold text-[.95rem]">크롬북 한 대</div>
-              <div className="text-[.7rem] font-normal text-ink-500">공정한 교육기회 · Admin</div>
+            <div className="leading-tight whitespace-nowrap">
+              <div className="font-extrabold text-[.85rem]">크롬북 한 대, 공정한 교육기회</div>
+              <div className="text-[.7rem] font-normal text-ink-500 mt-0.5">Admin Console</div>
             </div>
           </Link>
         </div>

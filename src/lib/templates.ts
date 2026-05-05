@@ -75,8 +75,9 @@ export function buildEmailHtml(ctx: TemplateContext): string {
       <div style="font-size:13px;letter-spacing:.15em;font-weight:700;text-transform:uppercase;color:#fbbf24;margin-bottom:10px;">
         UBMK · MONGOLIA
       </div>
-      <div style="font-size:26px;font-weight:800;letter-spacing:-.02em;">크롬북 한 대,</div>
-      <div style="font-size:26px;font-weight:800;letter-spacing:-.02em;color:#fbbf24;">공정한 교육기회</div>
+      <div style="font-size:22px;font-weight:800;letter-spacing:-.02em;white-space:nowrap;">
+        크롬북 한 대, <span style="color:#fbbf24;">공정한 교육기회</span>
+      </div>
     </div>
 
     <!-- Greeting -->

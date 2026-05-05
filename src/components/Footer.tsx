@@ -6,8 +6,7 @@ export default function Footer() {
       <div className="max-w-[1240px] mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-12 mb-12">
           <div>
-            <h4 className="text-white text-lg font-extrabold mb-1">크롬북 한 대,</h4>
-            <h4 className="text-white text-lg font-extrabold mb-4">공정한 교육기회</h4>
+            <h4 className="text-white text-lg font-extrabold mb-4">크롬북 한 대, 공정한 교육기회</h4>
             <p className="text-sm leading-relaxed mb-3">
               🇲🇳 몽골 UBMK 학교 (Ulaanbaatar Mission School)<br />
               Bayanzurkh District, Ulaanbaatar, Mongolia

@@ -54,9 +54,8 @@ function LoginInner() {
                 <path d="M2 19h20"/>
               </svg>
             </span>
-            <div className="leading-tight">
-              <div className="font-extrabold text-base">크롬북 한 대</div>
-              <div className="text-xs text-ink-500 font-semibold">공정한 교육기회</div>
+            <div className="font-extrabold text-base whitespace-nowrap">
+              크롬북 한 대, 공정한 교육기회
             </div>
           </div>
 

@@ -23,9 +23,8 @@ export default function Header() {
               <path d="M2 19h20"/>
             </svg>
           </span>
-          <span className="flex flex-col leading-tight">
-            <span className="font-sans font-extrabold text-[1rem]">크롬북 한 대</span>
-            <span className="font-sans text-[.7rem] text-ink-500 font-semibold tracking-normal">공정한 교육기회</span>
+          <span className="font-sans font-extrabold text-[1rem] whitespace-nowrap">
+            크롬북 한 대, 공정한 교육기회
           </span>
         </Link>
         <nav className="hidden md:flex items-center gap-8">
