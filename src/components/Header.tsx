@@ -15,12 +15,18 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 glass border-b border-ink-100">
       <div className="max-w-[1240px] mx-auto px-6 h-[72px] flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5 font-display font-extrabold text-[1.15rem] tracking-tight">
-          <span className="w-9 h-9 grid place-items-center rounded-xl text-white font-extrabold text-[.85rem]"
+        <Link href="/" className="flex items-center gap-2.5 tracking-tight">
+          <span className="w-9 h-9 grid place-items-center rounded-xl text-white"
                 style={{ background: 'linear-gradient(135deg, #1d4ed8, #3b82f6)', boxShadow: '0 4px 10px -2px rgba(37,99,235,.5)' }}>
-            UB
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="5" width="18" height="12" rx="1.5"/>
+              <path d="M2 19h20"/>
+            </svg>
           </span>
-          <span>UBMK 60</span>
+          <span className="flex flex-col leading-tight">
+            <span className="font-sans font-extrabold text-[1rem]">크롬북 한 대</span>
+            <span className="font-sans text-[.7rem] text-ink-500 font-semibold tracking-normal">공정한 교육기회</span>
+          </span>
         </Link>
         <nav className="hidden md:flex items-center gap-8">
           {NAV.map(item => {

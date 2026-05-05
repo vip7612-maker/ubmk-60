@@ -40,11 +40,12 @@ export default async function HomePage() {
             몽골 울란바토르 · UBMK 학교
           </span>
           <h1 className="text-[clamp(2.5rem,6vw,5rem)] font-display font-extrabold mb-6 max-w-[880px] tracking-tighter animate-fade-up delay-1 text-white">
-            60명의 학생,<br />60대의 크롬북,<br />
-            <span className="text-amber-400">하나의 약속.</span>
+            크롬북 한 대,<br />
+            <span className="text-amber-400">공정한 교육기회.</span>
           </h1>
           <p className="text-xl text-white/85 max-w-[620px] mb-10 leading-relaxed animate-fade-up delay-2">
-            울란바토르 UBMK 학교의 중·고등학생 60명에게<br />디지털 세상으로 향하는 첫 번째 도구를 선물해주세요.
+            몽골 UBMK 학교의 중·고등학생 60명에게<br />
+            한 명의 후원자가 한 대의 크롬북을 — 1:1 결연 후원.
           </p>
           <div className="flex gap-4 flex-wrap animate-fade-up delay-3">
             <Link href="/students" className="bg-amber-500 hover:bg-amber-400 text-ink-900 font-bold px-8 py-4 rounded-full text-base shadow-[0_8px_20px_-8px_rgba(245,158,11,.55)] transition-all hover:-translate-y-0.5">

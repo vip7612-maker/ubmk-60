@@ -2,11 +2,11 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'UBMK 60 — 몽골 학생들에게 크롬북이라는 날개를',
-  description: '몽골 울란바토르 UBMK 학교 중·고등학생 60명에게 크롬북을 선물하는 1:1 결연 후원 프로젝트',
+  title: '크롬북 한 대, 공정한 교육기회 — 몽골 UBMK 학교 60명 결연 후원',
+  description: '몽골 울란바토르 UBMK 학교 중·고등학생 60명과 1:1 결연하여 크롬북 한 대로 공정한 교육기회를 만들어가는 후원 프로젝트',
   openGraph: {
-    title: 'UBMK 60 — 60명의 학생, 60대의 크롬북',
-    description: '몽골 UBMK 학교 학생과 1:1 결연하여 디지털 교육의 첫 걸음을 함께해 주세요.',
+    title: '크롬북 한 대, 공정한 교육기회',
+    description: '몽골 UBMK 학교 학생 한 명에게 크롬북 한 대를 선물해 주세요. 한 대의 디지털 도구가 한 아이의 가능성을 엽니다.',
     type: 'website',
     locale: 'ko_KR',
   },

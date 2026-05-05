@@ -24,12 +24,17 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
     <div className="min-h-screen flex bg-ink-50">
       <aside className="w-64 bg-white border-r border-ink-100 sticky top-0 h-screen flex flex-col">
         <div className="p-6 border-b border-ink-100">
-          <Link href="/admin" className="flex items-center gap-2.5 font-display font-extrabold text-lg">
-            <span className="w-9 h-9 grid place-items-center rounded-xl text-white text-sm"
-                  style={{ background: 'linear-gradient(135deg, #1d4ed8, #3b82f6)' }}>UB</span>
-            <div>
-              <div>UBMK 60</div>
-              <div className="text-xs font-normal text-ink-500">Admin Console</div>
+          <Link href="/admin" className="flex items-center gap-2.5">
+            <span className="w-9 h-9 grid place-items-center rounded-xl text-white"
+                  style={{ background: 'linear-gradient(135deg, #1d4ed8, #3b82f6)' }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="5" width="18" height="12" rx="1.5"/>
+                <path d="M2 19h20"/>
+              </svg>
+            </span>
+            <div className="leading-tight">
+              <div className="font-extrabold text-[.95rem]">크롬북 한 대</div>
+              <div className="text-[.7rem] font-normal text-ink-500">공정한 교육기회 · Admin</div>
             </div>
           </Link>
         </div>

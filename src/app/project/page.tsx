@@ -6,7 +6,7 @@ import { getStats } from '@/lib/queries';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata = { title: '프로젝트 안내 — UBMK 60' };
+export const metadata = { title: '프로젝트 안내 — 크롬북 한 대, 공정한 교육기회' };
 
 export default async function ProjectPage() {
   const stats = await getStats();
@@ -21,7 +21,8 @@ export default async function ProjectPage() {
             🎯 프로젝트 안내
           </span>
           <h1 className="text-4xl md:text-5xl font-extrabold mt-4 mb-3">
-            <span className="gradient-text">UBMK 60</span> 크롬북 프로젝트
+            <span className="gradient-text">크롬북 한 대</span>로 만드는<br />
+            공정한 교육기회
           </h1>
           <p className="text-ink-500 text-lg max-w-[640px]">
             60명의 학생, 60대의 크롬북, 1:1 결연으로 시작하는<br />

@@ -45,7 +45,7 @@ export default async function AdminDashboard() {
       <div className="p-10">
         <div className="mb-8">
           <h1 className="text-3xl font-extrabold mb-1">대시보드</h1>
-          <p className="text-ink-500">UBMK 60 결연 후원 프로젝트 현황</p>
+          <p className="text-ink-500">크롬북 한 대, 공정한 교육기회 — 결연 후원 현황</p>
         </div>
 
         {/* Progress */}

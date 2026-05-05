@@ -6,7 +6,7 @@ import { listPublicStudents, getStats } from '@/lib/queries';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: '학생 만나기 — UBMK 60',
+  title: '학생 만나기 — 크롬북 한 대, 공정한 교육기회',
 };
 
 export default async function StudentsPage() {

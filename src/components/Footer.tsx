@@ -6,14 +6,15 @@ export default function Footer() {
       <div className="max-w-[1240px] mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-12 mb-12">
           <div>
-            <h4 className="text-white text-base font-bold mb-4">🇲🇳 UBMK 학교</h4>
-            <p className="text-sm leading-relaxed">
-              Ulaanbaatar Mission School<br />
+            <h4 className="text-white text-lg font-extrabold mb-1">크롬북 한 대,</h4>
+            <h4 className="text-white text-lg font-extrabold mb-4">공정한 교육기회</h4>
+            <p className="text-sm leading-relaxed mb-3">
+              🇲🇳 몽골 UBMK 학교 (Ulaanbaatar Mission School)<br />
               Bayanzurkh District, Ulaanbaatar, Mongolia
             </p>
-            <p className="text-sm mt-4 leading-relaxed">
-              중·고등학생 60명을 위한<br />
-              크롬북 1:1 결연 프로젝트
+            <p className="text-sm leading-relaxed">
+              중·고등학생 60명과 함께하는<br />
+              1:1 결연 후원 프로젝트
             </p>
           </div>
           <div>
@@ -31,7 +32,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between gap-4 text-xs">
-          <span>© 2026 UBMK Digital Transformation Project. All rights reserved.</span>
+          <span>© 2026 크롬북 한 대, 공정한 교육기회 — UBMK 학교 후원 프로젝트</span>
           <span>Powered by Next.js · Turso · Vercel</span>
         </div>
       </div>

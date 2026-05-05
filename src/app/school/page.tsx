@@ -4,7 +4,7 @@ import { listGallery } from '@/lib/queries';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata = { title: '학교 소개 — UBMK 60' };
+export const metadata = { title: '학교 소개 — 크롬북 한 대, 공정한 교육기회' };
 
 export default async function SchoolPage() {
   const gallery = await listGallery();

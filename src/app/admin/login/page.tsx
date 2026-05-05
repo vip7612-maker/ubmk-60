@@ -46,10 +46,18 @@ function LoginInner() {
          style={{ background: 'radial-gradient(circle at 10% 20%, rgba(37,99,235,.08) 0%, transparent 50%), radial-gradient(circle at 90% 80%, rgba(245,158,11,.08) 0%, transparent 50%), #f8fafc' }}>
       <main className="flex-1 grid place-items-center p-6">
         <div className="bg-white rounded-[1.5rem] p-12 w-full max-w-[420px] shadow-hero border border-ink-100">
-          <div className="flex justify-center items-center gap-2.5 mb-8 font-display font-extrabold text-xl">
-            <span className="w-11 h-11 grid place-items-center rounded-xl text-white font-extrabold text-base"
-                  style={{ background: 'linear-gradient(135deg, #1d4ed8, #3b82f6)' }}>UB</span>
-            <span>UBMK 60</span>
+          <div className="flex justify-center items-center gap-2.5 mb-8">
+            <span className="w-11 h-11 grid place-items-center rounded-xl text-white"
+                  style={{ background: 'linear-gradient(135deg, #1d4ed8, #3b82f6)' }}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="5" width="18" height="12" rx="1.5"/>
+                <path d="M2 19h20"/>
+              </svg>
+            </span>
+            <div className="leading-tight">
+              <div className="font-extrabold text-base">크롬북 한 대</div>
+              <div className="text-xs text-ink-500 font-semibold">공정한 교육기회</div>
+            </div>
           </div>
 
           <h1 className="text-center text-2xl font-extrabold mb-1">관리자 로그인</h1>

@@ -7,7 +7,7 @@ import { gradeToLabel } from '@/lib/types';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: '결연 신청 완료 — UBMK 60',
+  title: '결연 신청 완료 — 크롬북 한 대, 공정한 교육기회',
 };
 
 export default async function ThankYouPage({ searchParams }: { searchParams: Promise<{ student?: string }> }) {
