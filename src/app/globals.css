@@ -1,0 +1,125 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-blue-900: #1e3a8a;
+  --color-blue-700: #1d4ed8;
+  --color-blue-600: #2563eb;
+  --color-blue-500: #3b82f6;
+  --color-blue-50:  #eff6ff;
+  --color-amber-600: #d97706;
+  --color-amber-500: #f59e0b;
+  --color-amber-400: #fbbf24;
+  --color-amber-100: #fef3c7;
+  --color-amber-50:  #fffbeb;
+  --color-ink-900: #0f172a;
+  --color-ink-700: #334155;
+  --color-ink-500: #64748b;
+  --color-ink-300: #cbd5e1;
+  --color-ink-100: #f1f5f9;
+  --color-ink-50:  #f8fafc;
+
+  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-display: 'Outfit', 'Pretendard', sans-serif;
+
+  --radius-card: 1rem;
+  --radius-card-lg: 1.5rem;
+  --radius-card-xl: 2rem;
+
+  --shadow-soft: 0 4px 14px -2px rgba(15,23,42,.08), 0 2px 4px -2px rgba(15,23,42,.04);
+  --shadow-lift: 0 18px 40px -12px rgba(15,23,42,.18), 0 6px 12px -6px rgba(15,23,42,.08);
+  --shadow-hero: 0 32px 64px -20px rgba(30,58,138,.25);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-ink-50);
+  color: var(--color-ink-900);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  font-weight: 800;
+}
+
+@keyframes shimmer {
+  to { transform: translateX(100%); }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes hero-fade {
+  0%, 21% { opacity: 1; transform: scale(1.08); }
+  25%, 100% { opacity: 0; transform: scale(1); }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .4; }
+}
+
+.animate-fade-up { animation: fade-up .8s cubic-bezier(.4,0,.2,1) both; }
+.animate-fade-up.delay-1 { animation-delay: .1s; }
+.animate-fade-up.delay-2 { animation-delay: .2s; }
+.animate-fade-up.delay-3 { animation-delay: .3s; }
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-blue-700) 0%, var(--color-amber-500) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glass {
+  background: rgba(255,255,255,.85);
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+}
+
+/* Hero slide */
+.hero-slide {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  opacity: 0;
+  animation: hero-fade 24s infinite;
+}
+.hero-slide:nth-child(1) { animation-delay: 0s; }
+.hero-slide:nth-child(2) { animation-delay: 6s; }
+.hero-slide:nth-child(3) { animation-delay: 12s; }
+.hero-slide:nth-child(4) { animation-delay: 18s; }
+.hero-slide::after {
+  content: ''; position: absolute; inset: 0;
+  background:
+    linear-gradient(180deg, rgba(15,23,42,.15) 0%, rgba(15,23,42,.45) 50%, rgba(15,23,42,.85) 100%),
+    linear-gradient(90deg, rgba(30,58,138,.4) 0%, transparent 60%);
+}
+
+.shimmer-bar {
+  position: relative;
+}
+.shimmer-bar::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent);
+  animation: shimmer 2s infinite;
+}
+
+.pulse-dot {
+  animation: pulse-dot 2s infinite;
+}
+
+/* Letter text preserves line breaks */
+.letter-text {
+  white-space: pre-line;
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: var(--color-ink-700);
+}
