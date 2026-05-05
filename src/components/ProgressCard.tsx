@@ -18,7 +18,7 @@ export default function ProgressCard({ completed, total = 60, variant = 'default
             / {total}대 결연 완료
           </div>
           <div className="text-ink-500 text-sm mt-1">
-            크롬북 한 대 = 30만원 · 한 학생의 미래
+            크롬북 한 대 = 50만원 · 한 학생의 미래
           </div>
         </div>
         <div className="bg-blue-700 text-white px-3 py-1 rounded-full text-sm font-bold">

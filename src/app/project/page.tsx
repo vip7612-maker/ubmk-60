@@ -50,35 +50,66 @@ export default async function ProjectPage() {
       </section>
 
       <section className="py-16 max-w-[1000px] mx-auto px-6">
-        <h2 className="text-3xl font-extrabold mb-8">💰 예산 사용 안내</h2>
-        <div className="bg-white rounded-2xl p-8 border border-ink-100 shadow-soft">
-          <div className="space-y-4">
-            <BudgetRow item="크롬북 1대 (학생용)" amount="240,000원" pct={80} />
-            <BudgetRow item="배송·관세·현지 셋업" amount="30,000원" pct={10} />
-            <BudgetRow item="교사 연수·기술 지원 (5년)" amount="20,000원" pct={6.7} />
-            <BudgetRow item="운영비·결제 수수료" amount="10,000원" pct={3.3} />
-          </div>
-          <div className="mt-6 pt-6 border-t border-ink-100 flex justify-between font-extrabold text-lg">
-            <span>총 후원 금액</span>
-            <span className="text-blue-700">300,000원</span>
-          </div>
+        <h2 className="text-3xl font-extrabold mb-8">💰 후원 안내</h2>
+        <div className="bg-white rounded-2xl p-8 border border-ink-100 shadow-soft text-center">
+          <div className="text-sm font-semibold text-ink-500 mb-2">학생 1명 결연 후원 금액</div>
+          <div className="font-display text-5xl font-extrabold text-blue-700 mb-3">500,000원</div>
+          <p className="text-ink-700">
+            크롬북 1대와 5년간의 학습 동행을 위한 모든 비용이 포함되어 있습니다.
+          </p>
         </div>
         <p className="text-xs text-ink-500 mt-4">
-          * 모든 영수증과 사용 내역은 분기별 보고서로 후원자님께 공개됩니다.
+          * 사용 내역은 분기별 보고서로 후원자님께 공개됩니다.
         </p>
       </section>
 
       <section className="py-16 max-w-[1000px] mx-auto px-6">
-        <h2 className="text-3xl font-extrabold mb-8">📅 진행 일정</h2>
-        <div className="space-y-4">
-          <Timeline phase="1단계" date="2026.04 ~ 2026.07" title="결연 모집"
-                    desc="후원자 모집 및 1:1 매칭 진행. 결연 완료 시 학생 정보·손편지 공유." />
-          <Timeline phase="2단계" date="2026.08" title="크롬북 발송"
-                    desc="60대 일괄 구매 및 통관·배송. 학생별 셋업 및 ID 발급." />
-          <Timeline phase="3단계" date="2026.09" title="교육 시작"
-                    desc="구글 공인 교육자 현지 방문, 교사 연수 및 학생 워크숍 진행." />
-          <Timeline phase="4단계" date="2026.10 ~" title="분기별 진행 보고"
-                    desc="후원자에게 결연 학생의 학습 진행 상황·성장 스토리를 분기별 안내." />
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-xs font-bold tracking-[0.1em] uppercase text-blue-700 bg-blue-50 px-3 py-1 rounded-full">
+            현장 이야기
+          </span>
+        </div>
+        <h2 className="text-3xl font-extrabold mb-3">
+          UBMK 학교에 불어온 <span className="gradient-text">구글 교육 바람</span>
+        </h2>
+        <p className="text-ink-500 mb-8">
+          몽골 현지에서는 이미 선생님들이 먼저 변화하고 있습니다.
+        </p>
+
+        <div className="bg-white rounded-[1.5rem] p-8 border border-ink-100 shadow-soft space-y-6 text-ink-700 leading-relaxed">
+          <p>
+            UBMK 학교 선생님들은 지금 <strong>구글 워크스페이스 · 에듀테크 · 인공지능 도구</strong>를 학생 교육에 적용하기 위해
+            누구보다 뜨거운 열정으로 준비하고 있습니다.
+          </p>
+
+          <div className="bg-amber-50 border border-amber-100 rounded-2xl p-5">
+            <div className="text-sm font-bold text-amber-600 mb-2">📚 자발적으로 시작된 보충 수업</div>
+            <p className="text-sm text-ink-700">
+              월·화·목 정규 수업(오후 3~4시)만으로 부족하다며 <strong>선생님들이 먼저 보충 수업을 요청</strong>했습니다.
+              지금은 같은 요일 오전 9~11시 · 오후 1시 30분~3시까지, 1:1 또는 소그룹으로 30분씩
+              밀착 수업이 추가로 진행되고 있습니다. 쉬는 시간까지 반납하며 하나라도 더 배우려는 모습입니다.
+            </p>
+          </div>
+
+          <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5">
+            <div className="text-sm font-bold text-blue-700 mb-2">🌱 "새로운 세계"라며 흡수하는 학구열</div>
+            <p className="text-sm text-ink-700">
+              수년간 사용해온 익숙한 오피스 도구를 내려놓고 구글 도구로 전환하는 일은 결코 쉽지 않습니다.
+              그럼에도 선생님들은 <strong>"새로운 세계가 열렸다"</strong>며 스펀지처럼 흡수하고 있고,
+              현지 교육 봉사팀도 모르는 기능까지 미리 공부해 함께 성장하는 중입니다.
+            </p>
+          </div>
+
+          <p className="text-sm text-ink-500 pt-2">
+            👉 <strong>지금 부족한 것은 단 하나, 학생들 손에 쥐어줄 도구입니다.</strong><br />
+            교사들의 열정이 학생들에게 닿으려면, 학생 한 명 한 명에게 크롬북이 필요합니다.
+          </p>
+
+          <div className="text-xs text-ink-500 pt-2 border-t border-ink-100">
+            출처: <a href="https://blog.naver.com/monglemongle2" target="_blank" rel="noopener" className="text-blue-700 hover:underline">
+              몽글몽글 현장 블로그 — UBMK 학교에 불어온 구글 교육 바람
+            </a>
+          </div>
         </div>
       </section>
 
@@ -101,29 +132,3 @@ export default async function ProjectPage() {
   );
 }
 
-function BudgetRow({ item, amount, pct }: { item: string; amount: string; pct: number }) {
-  return (
-    <div>
-      <div className="flex justify-between items-center mb-1.5 text-sm">
-        <span className="font-semibold text-ink-700">{item}</span>
-        <span className="font-bold text-ink-900">{amount}</span>
-      </div>
-      <div className="h-2 bg-ink-100 rounded-full overflow-hidden">
-        <div className="h-full" style={{ width: `${pct}%`, background: 'linear-gradient(90deg, #2563eb, #f59e0b)' }} />
-      </div>
-    </div>
-  );
-}
-
-function Timeline({ phase, date, title, desc }: { phase: string; date: string; title: string; desc: string }) {
-  return (
-    <div className="bg-white rounded-2xl p-6 border border-ink-100 shadow-soft flex gap-5 items-start">
-      <div className="bg-blue-50 text-blue-700 font-bold px-3 py-2 rounded-lg text-sm whitespace-nowrap">{phase}</div>
-      <div className="flex-1">
-        <div className="text-xs text-ink-500 font-semibold mb-1">{date}</div>
-        <h3 className="text-lg font-extrabold mb-1">{title}</h3>
-        <p className="text-sm text-ink-700">{desc}</p>
-      </div>
-    </div>
-  );
-}

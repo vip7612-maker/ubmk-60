@@ -56,7 +56,7 @@ export default async function AdminDashboard() {
                 <strong className="text-blue-700 text-3xl mr-1">{stats.completed}</strong>
                 / {Math.max(60, stats.totalStudents)}대 결연 완료
               </div>
-              <div className="text-ink-500 text-sm mt-1">목표 60대 / 학생당 30만원</div>
+              <div className="text-ink-500 text-sm mt-1">목표 60대 / 학생당 50만원</div>
             </div>
             <div className="bg-blue-700 text-white px-3 py-1 rounded-full text-sm font-bold">{percent}%</div>
           </div>

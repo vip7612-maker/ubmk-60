@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
+import { sendSponsorNotifications } from '@/lib/notifications';
+import { gradeToLabel, type Grade } from '@/lib/types';
 
 export const runtime = 'nodejs';
 
@@ -30,7 +32,7 @@ export async function POST(request: Request) {
 
   const db = getDb();
   const studentRes = await db.execute({
-    sql: 'SELECT id, status FROM students WHERE id = ?',
+    sql: 'SELECT id, status, alias_name, grade, dream_summary FROM students WHERE id = ?',
     args: [studentId],
   });
   if (studentRes.rows.length === 0) {
@@ -39,6 +41,7 @@ export async function POST(request: Request) {
   if (String(studentRes.rows[0].status) === 'COMPLETED') {
     return NextResponse.json({ error: '이미 결연이 완료된 학생입니다.' }, { status: 409 });
   }
+  const student = studentRes.rows[0];
 
   // Insert sponsor with PENDING status (admin will mark PAID after deposit confirmation)
   await db.execute({
@@ -47,5 +50,18 @@ export async function POST(request: Request) {
     args: [name.trim(), phone.trim(), email.trim(), message?.trim() || null, messagePublic ? 1 : 0, studentId],
   });
 
-  return NextResponse.json({ success: true });
+  // Fire-and-forget notifications (don't block response on notification failures)
+  const notify = await sendSponsorNotifications({
+    sponsorName: name.trim(),
+    studentAlias: String(student.alias_name),
+    studentGrade: gradeToLabel(student.grade as Grade),
+    studentDream: student.dream_summary as string | null,
+    toPhone: phone.trim(),
+    toEmail: email.trim(),
+  });
+
+  return NextResponse.json({
+    success: true,
+    notifications: { sms: notify.sms.sent, email: notify.email.sent },
+  });
 }

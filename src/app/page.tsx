@@ -175,7 +175,7 @@ export default async function HomePage() {
       {/* FINAL CTA */}
       <section className="py-32 text-center" style={{ background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)' }}>
         <div className="max-w-[680px] mx-auto px-6">
-          <h2 className="text-5xl font-extrabold mb-4">당신의 30만원이<br />한 아이의 10년을 바꿉니다</h2>
+          <h2 className="text-5xl font-extrabold mb-4">당신의 50만원이<br />한 아이의 10년을 바꿉니다</h2>
           <p className="text-lg text-ink-700 mb-10">지금 바로 60명의 학생 중 한 명을 만나보세요.<br />당신의 결연을 기다리는 학생이 있습니다.</p>
           <Link href="/students"
                 className="inline-flex items-center bg-blue-700 hover:bg-blue-900 text-white font-bold px-8 py-4 rounded-full text-base shadow-[0_8px_20px_-8px_rgba(29,78,216,.6)] transition-all hover:-translate-y-0.5">

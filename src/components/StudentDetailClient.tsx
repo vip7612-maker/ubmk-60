@@ -72,7 +72,7 @@ export default function StudentDetailClient({ student, similarStudents }: {
             <div className="rounded-2xl p-5 mb-4 text-white"
                  style={{ background: 'linear-gradient(135deg, #1d4ed8, #1e3a8a)' }}>
               <div className="text-xs text-white/75">크롬북 1대 후원 금액</div>
-              <div className="font-display text-4xl font-extrabold leading-none my-1">₩300,000</div>
+              <div className="font-display text-4xl font-extrabold leading-none my-1">₩500,000</div>
               <div className="text-xs text-white/75">한 학생의 5년을 함께합니다</div>
             </div>
 
@@ -137,7 +137,7 @@ export default function StudentDetailClient({ student, similarStudents }: {
               <div className="bg-white border border-ink-100 rounded-[1.5rem] p-10 text-center shadow-soft">
                 <h3 className="text-2xl font-extrabold mb-2">{student.alias_name}의 첫 멘토가 되어주세요</h3>
                 <p className="text-ink-500 mb-7">
-                  당신의 30만원이 {student.alias_name}의 5년 동안의 학습 도구가 됩니다.<br />
+                  당신의 50만원이 {student.alias_name}의 5년 동안의 학습 도구가 됩니다.<br />
                   결연 후 학습 진행 상황을 분기별로 안내드립니다.
                 </p>
                 <button onClick={() => setModalOpen(true)}

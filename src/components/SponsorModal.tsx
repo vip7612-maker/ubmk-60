@@ -71,7 +71,7 @@ export default function SponsorModal({ student, onClose }: {
         </div>
 
         <div className="bg-amber-50 border border-amber-100 px-4 py-3 rounded-xl text-[.82rem] text-amber-600 mb-4">
-          ℹ️ 신청 후 24시간 내 담당자가 직접 전화드려<br />입금 계좌·세부 절차를 친절히 안내드립니다.
+          ℹ️ 신청하시면 입력하신 연락처로<br />문자와 이메일로 후원 안내문이 자동 발송됩니다.
         </div>
 
         {error && (
@@ -125,7 +125,7 @@ export default function SponsorModal({ student, onClose }: {
           </button>
 
           <p className="text-center mt-4 text-xs text-ink-500">
-            💳 크롬북 1대 후원 금액: <strong className="text-blue-700">300,000원</strong>
+            💳 크롬북 1대 후원 금액: <strong className="text-blue-700">500,000원</strong>
           </p>
         </form>
       </div>

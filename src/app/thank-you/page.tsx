@@ -25,7 +25,8 @@ export default async function ThankYouPage({ searchParams }: { searchParams: Pro
             결연 신청이 정상적으로 접수되었습니다.
           </p>
           <p className="text-ink-500 mb-12">
-            <strong>24시간 내</strong> 담당자가 직접 전화드려 입금 계좌·세부 절차를 안내드립니다.
+            방금 입력하신 <strong>휴대전화·이메일</strong>로<br />
+            결연 안내문이 자동 발송되었습니다.
           </p>
 
           {student && (
@@ -51,10 +52,11 @@ export default async function ThankYouPage({ searchParams }: { searchParams: Pro
           <div className="bg-amber-50 border border-amber-100 rounded-2xl p-6 text-left mb-10 text-sm">
             <h3 className="font-bold text-amber-600 mb-3">📋 다음 안내</h3>
             <ul className="space-y-2 text-ink-700">
-              <li>• 24시간 내 담당자가 신청해주신 전화번호로 연락드립니다.</li>
-              <li>• 입금 계좌 및 세부 절차를 친절히 안내드립니다.</li>
-              <li>• 입금이 확인되면 결연 학생의 학습 진행 상황을 분기별로 안내드립니다.</li>
+              <li>• 방금 신청 내용을 담은 안내 문자와 이메일이 자동 발송되었습니다.</li>
+              <li>• 안내문에 적힌 계좌로 후원금(500,000원) 입금을 부탁드립니다.</li>
+              <li>• 입금이 확인되면 결연이 정식 완료되며, 학생의 학습 진행 상황을 분기별로 안내드립니다.</li>
               <li>• 기부금 영수증은 등록해주신 이메일로 발송됩니다.</li>
+              <li>• 문의 사항이 있으시면 안내문에 적힌 연락처로 답신해 주세요.</li>
             </ul>
           </div>
 
