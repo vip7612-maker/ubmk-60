@@ -49,7 +49,7 @@ export default function StudentsBrowser({ students, completed }: { students: Pub
     return sorted;
   }, [students, grade, career, status, search, sort]);
 
-  const percent = Math.min(100, Math.round((completed / Math.max(60, total)) * 100));
+  const percent = Math.min(100, Math.round((completed / Math.max(70, total)) * 100));
 
   return (
     <>
@@ -71,7 +71,7 @@ export default function StudentsBrowser({ students, completed }: { students: Pub
               <div className="flex-1 h-1.5 bg-white rounded-full overflow-hidden">
                 <div className="h-full" style={{ width: `${percent}%`, background: 'linear-gradient(90deg, #2563eb, #f59e0b)' }} />
               </div>
-              <span><strong className="text-blue-700">{completed}</strong> / {Math.max(60, total)}</span>
+              <span><strong className="text-blue-700">{completed}</strong> / {Math.max(70, total)}</span>
             </div>
           </div>
         </div>

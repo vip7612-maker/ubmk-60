@@ -1,9 +1,10 @@
 # 크롬북 한 대, 공정한 교육기회
 
-몽골 울란바타르 UBMK 학교 중·고등학생 60명과 1:1 결연하여 크롬북 한 대로 공정한 교육기회를 만들어가는 후원 프로젝트.
+몽골 울란바타르 UBMK 학교 중·고등학생 70명과 1:1 결연하여 크롬북 한 대로 공정한 교육기회를 만들어가는 후원 프로젝트.
 
 > **프로젝트명**: 크롬북 한 대, 공정한 교육기회
-> **저장소 슬러그**: `ubmk-60` (URL 안정성을 위해 유지)
+> **배포 주소**: <https://ubmk-70.vercel.app/>
+> **저장소 슬러그**: `ubmk-60` (기존 URL/리소스 안정성을 위해 유지)
 
 ## 🛠 기술 스택
 
@@ -17,7 +18,7 @@
 
 ### 공개
 - `/` — 메인 (학교 사진 자동 롤링 히어로 · 진행률 · 학생 미리보기 · 후원자 이야기 · 갤러리)
-- `/students` — 60명 학생 그리드 (학년·진로·상태 필터 + 검색)
+- `/students` — 70명 학생 그리드 (학년·진로·상태 필터 + 검색)
 - `/students/[id]` — 학생 상세 (꿈 · 손편지 한/몽 · 결연 모달)
 - `/school` — 학교 소개 + 갤러리
 - `/project` — 프로젝트 안내 + 예산
@@ -68,7 +69,7 @@ AUTH_SECRET=random-32-char-or-longer-secret-string
 ```
 > `AUTH_SECRET`은 `openssl rand -hex 32`로 생성
 
-### 6) DB 시드 (60명 학생 + 5개 갤러리 + 8개 샘플 후원)
+### 6) DB 시드 (70명 학생 + 5개 갤러리 + 8개 샘플 후원)
 ```bash
 npm run db:seed
 ```
@@ -109,7 +110,7 @@ vercel deploy --prod
 ## 📊 DB 스키마
 
 ```
-students    → 60명 학생 (가명·꿈·손편지·아바타 시드)
+students    → 70명 학생 (가명·꿈·손편지·아바타 시드)
 sponsors    → 후원 신청 (PENDING / PAID / CANCELED)
 gallery     → 학교 활동 사진
 ```
@@ -128,6 +129,6 @@ gallery     → 학교 활동 사진
 npm run dev              # 개발 서버
 npm run build            # 프로덕션 빌드
 npm run start            # 프로덕션 서버
-npm run db:seed          # 60명 학생 시드
+npm run db:seed          # 70명 학생 시드
 npm run hash:password    # 비밀번호 해시 생성
 ```

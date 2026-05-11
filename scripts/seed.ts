@@ -22,6 +22,8 @@ const NAMES = [
   '에르덴','뭉크졸','자가르','바트졸','오드','한단','테무진','촉투','숩드','만달',
   '바이라','너르마','체렝','우야가','다바','보양트','졸자야','초이주','뭉흐','바트가',
   '버르드','아노','체첵마','시농','난당','후렐','어트','바트벌','초그','서론',
+  // ── 추가 10명 (기존 60명 유지) ──
+  '오르길','강가','갈바','돌고르','치메드','하스','잠바','오슬','벌도','나란투',
 ];
 
 const CAREERS = ['IT','ART','MED','EDU','MEDIA','ENG','SCI','BIZ'];
@@ -99,20 +101,27 @@ async function main() {
   }
   console.log('✅ Schema applied');
 
-  // Wipe existing students/sponsors for clean re-seed
+  // Wipe existing students/sponsors for clean re-seed.
+  // students.sponsor_id ↔ sponsors.student_id 양방향 FK 때문에
+  // sponsor_id를 먼저 NULL로 끊은 뒤 sponsors → students 순으로 삭제해야 한다.
+  // (gallery는 admin UI에서 추가된 데이터가 있을 수 있어 보존.)
   console.log('🧹 Clearing previous data...');
+  await client.execute('UPDATE students SET sponsor_id = NULL');
   await client.execute('DELETE FROM sponsors');
   await client.execute('DELETE FROM students');
-  await client.execute("DELETE FROM sqlite_sequence WHERE name IN ('students','sponsors','gallery')");
+  await client.execute("DELETE FROM sqlite_sequence WHERE name IN ('students','sponsors')");
 
-  console.log('🌱 Seeding 60 students...');
+  console.log('🌱 Seeding 70 students...');
   const grades = ['중1', '중2', '중3', '고1', '고2', '고3'];
   const ages: Record<string, number[]> = {
     '중1': [13], '중2': [14], '중3': [15], '고1': [16], '고2': [17], '고3': [18],
   };
+  // 기존 1~60은 grades[floor((i-1)/10)] — 학년당 10명씩 그대로 유지.
+  // 추가 61~70은 6학년에 골고루 분배 (중1·중2·중3·고1·고2·고3·중2·중3·고1·고2).
+  const extraGrades = ['중1', '중2', '중3', '고1', '고2', '고3', '중2', '중3', '고1', '고2'];
 
-  for (let i = 1; i <= 60; i++) {
-    const grade = grades[Math.floor((i - 1) / 10)];
+  for (let i = 1; i <= 70; i++) {
+    const grade = i <= 60 ? grades[Math.floor((i - 1) / 10)] : extraGrades[i - 61];
     const name = NAMES[i - 1];
     const age = ages[grade][0];
     const careers = pickN(CAREERS, Math.floor(Math.random() * 2) + 1);
@@ -181,7 +190,7 @@ async function main() {
   }
 
   console.log('🎉 Seed complete!');
-  console.log('   • 60 students');
+  console.log('   • 70 students');
   console.log('   • 8 sample sponsorships (PAID)');
   console.log('   • 5 gallery items');
   process.exit(0);

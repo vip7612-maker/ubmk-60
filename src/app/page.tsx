@@ -43,7 +43,7 @@ export default async function HomePage() {
             크롬북 한 대, <span className="text-amber-400">공정한 교육기회</span>
           </h1>
           <p className="text-xl text-white/85 max-w-[620px] mb-10 leading-relaxed animate-fade-up delay-2">
-            몽골 UBMK 학교의 중·고등학생 60명에게<br />
+            몽골 UBMK 학교의 중·고등학생 70명에게<br />
             한 명의 후원자가 한 대의 크롬북을 — 1:1 결연 후원.
           </p>
           <div className="flex gap-4 flex-wrap animate-fade-up delay-3">
@@ -59,7 +59,7 @@ export default async function HomePage() {
 
       {/* PROGRESS */}
       <div className="relative z-20 -mt-16 max-w-[1240px] mx-auto px-6">
-        <ProgressCard completed={stats.completed} total={Math.max(60, stats.total)} />
+        <ProgressCard completed={stats.completed} total={Math.max(70, stats.total)} />
       </div>
 
       {/* STUDENTS PREVIEW */}
@@ -81,7 +81,7 @@ export default async function HomePage() {
         <div className="text-center">
           <Link href="/students"
                 className="inline-flex items-center bg-blue-700 hover:bg-blue-900 text-white font-bold px-8 py-4 rounded-full text-base shadow-[0_8px_20px_-8px_rgba(29,78,216,.6)] transition-all hover:-translate-y-0.5">
-            60명 모두 만나보기 →
+            70명 모두 만나보기 →
           </Link>
         </div>
       </section>
@@ -176,7 +176,7 @@ export default async function HomePage() {
       <section className="py-32 text-center" style={{ background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)' }}>
         <div className="max-w-[680px] mx-auto px-6">
           <h2 className="text-5xl font-extrabold mb-4">당신의 50만원이<br />한 아이의 10년을 바꿉니다</h2>
-          <p className="text-lg text-ink-700 mb-10">지금 바로 60명의 학생 중 한 명을 만나보세요.<br />당신의 결연을 기다리는 학생이 있습니다.</p>
+          <p className="text-lg text-ink-700 mb-10">지금 바로 70명의 학생 중 한 명을 만나보세요.<br />당신의 결연을 기다리는 학생이 있습니다.</p>
           <Link href="/students"
                 className="inline-flex items-center bg-blue-700 hover:bg-blue-900 text-white font-bold px-8 py-4 rounded-full text-base shadow-[0_8px_20px_-8px_rgba(29,78,216,.6)] transition-all hover:-translate-y-0.5">
             학생과 결연하기 →

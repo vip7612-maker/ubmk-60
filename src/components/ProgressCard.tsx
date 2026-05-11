@@ -1,4 +1,4 @@
-export default function ProgressCard({ completed, total = 60, variant = 'default' }: {
+export default function ProgressCard({ completed, total = 70, variant = 'default' }: {
   completed: number;
   total?: number;
   variant?: 'default' | 'amber';

@@ -12,7 +12,7 @@ export default function Footer() {
               Bayanzurkh District, Ulaanbaatar, Mongolia
             </p>
             <p className="text-sm leading-relaxed">
-              중·고등학생 60명과 함께하는<br />
+              중·고등학생 70명과 함께하는<br />
               1:1 결연 후원 프로젝트
             </p>
           </div>

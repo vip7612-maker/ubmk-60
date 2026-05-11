@@ -33,21 +33,21 @@ export default async function ProjectPage() {
             공정한 교육기회
           </h1>
           <p className="text-ink-500 text-lg max-w-[640px]">
-            60명의 학생, 60대의 크롬북, 1:1 결연으로 시작하는<br />
+            70명의 학생, 70대의 크롬북, 1:1 결연으로 시작하는<br />
             5년간의 디지털 교육 동행 프로젝트.
           </p>
         </div>
       </section>
 
       <section className="py-16 max-w-[1240px] mx-auto px-6">
-        <ProgressCard completed={stats.completed} total={Math.max(60, stats.total)} variant="amber" />
+        <ProgressCard completed={stats.completed} total={Math.max(70, stats.total)} variant="amber" />
       </section>
 
       <section className="py-16 max-w-[1000px] mx-auto px-6">
         <h2 className="text-3xl font-extrabold mb-8">💡 프로젝트 개요</h2>
         <div className="space-y-6 text-ink-700 leading-relaxed">
           <p>
-            <strong>몽골 UBMK 학교의 중·고등학생 60명에게 크롬북을 1:1 결연 방식으로 후원하는 프로젝트</strong>입니다.
+            <strong>몽골 UBMK 학교의 중·고등학생 70명에게 크롬북을 1:1 결연 방식으로 후원하는 프로젝트</strong>입니다.
             한 명의 후원자가 한 명의 학생과 매칭되어, 5년간의 디지털 학습 여정을 함께합니다.
           </p>
           <p>
@@ -155,7 +155,7 @@ export default async function ProjectPage() {
             </p>
             <p className="text-white/70 text-sm">
               교사들의 열정이 학생들에게 닿으려면,<br />
-              60명의 학생 한 명 한 명에게 크롬북이 필요합니다.
+              70명의 학생 한 명 한 명에게 크롬북이 필요합니다.
             </p>
           </div>
 
@@ -171,7 +171,7 @@ export default async function ProjectPage() {
         <div className="max-w-[680px] mx-auto px-6">
           <h2 className="text-4xl font-extrabold mb-4">함께 시작해 주세요</h2>
           <p className="text-lg text-ink-700 mb-10">
-            지금 바로 60명의 학생 중 한 명을 선택해<br />
+            지금 바로 70명의 학생 중 한 명을 선택해<br />
             그의 5년 동안의 멘토가 되어주세요.
           </p>
           <Link href="/students"

@@ -38,7 +38,7 @@ async function getDashboardStats() {
 
 export default async function AdminDashboard() {
   const stats = await getDashboardStats();
-  const percent = Math.round((stats.completed / Math.max(60, stats.totalStudents)) * 100);
+  const percent = Math.round((stats.completed / Math.max(70, stats.totalStudents)) * 100);
 
   return (
     <AdminShell>
@@ -54,9 +54,9 @@ export default async function AdminDashboard() {
             <div>
               <div className="font-display font-extrabold text-2xl">
                 <strong className="text-blue-700 text-3xl mr-1">{stats.completed}</strong>
-                / {Math.max(60, stats.totalStudents)}대 결연 완료
+                / {Math.max(70, stats.totalStudents)}대 결연 완료
               </div>
-              <div className="text-ink-500 text-sm mt-1">목표 60대 / 학생당 50만원</div>
+              <div className="text-ink-500 text-sm mt-1">목표 70대 / 학생당 50만원</div>
             </div>
             <div className="bg-blue-700 text-white px-3 py-1 rounded-full text-sm font-bold">{percent}%</div>
           </div>
