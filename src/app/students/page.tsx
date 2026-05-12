@@ -30,7 +30,6 @@ export default async function StudentsPage() {
             <span aria-hidden className="text-base leading-none mt-0.5">🔒</span>
             <span>
               학생 개인정보 보호를 위해 표시되는 모든 이름은 <strong>가명</strong>이에요.
-              실명·연락처는 결연 매칭이 확정된 후원자에게만 별도로 안내드립니다.
             </span>
           </div>
         </div>
