@@ -7,6 +7,14 @@ import { gradeToLabel } from '@/lib/types';
 
 const TODAY_DAY = new Date().getDate();
 
+/** 휴대전화 자동 하이픈: 010-XXXX-XXXX 형식. 숫자만 추출해 길이별로 포맷. */
+function formatPhone(input: string): string {
+  const d = input.replace(/\D/g, '').slice(0, 11);
+  if (d.length <= 3) return d;
+  if (d.length <= 7) return `${d.slice(0, 3)}-${d.slice(3)}`;
+  return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}`;
+}
+
 export default function SponsorModal({ student, onClose }: {
   student: PublicStudent;
   onClose: () => void;
@@ -120,8 +128,8 @@ export default function SponsorModal({ student, onClose }: {
           </Field>
 
           <Field label="전화번호" required>
-            <input type="tel" required value={form.phone}
-                   onChange={e => setForm({ ...form, phone: e.target.value })}
+            <input type="tel" required value={form.phone} inputMode="numeric" maxLength={13}
+                   onChange={e => setForm({ ...form, phone: formatPhone(e.target.value) })}
                    placeholder="010-0000-0000" className="w-full px-4 py-3 border border-ink-300 rounded-xl text-[.95rem] focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 focus:outline-none" />
           </Field>
 
