@@ -64,26 +64,44 @@ export async function getStats(): Promise<{ completed: number; total: number; wa
   return { completed, waiting, total: completed + waiting };
 }
 
+// 한국 이름 마스킹: 김민→김*, 황재순→황*순, 이아무개→이**개
+function maskKoreanName(name: string): string {
+  const len = name.length;
+  if (len <= 1) return name;
+  if (len === 2) return name[0] + '*';
+  return name[0] + '*'.repeat(len - 2) + name[len - 1];
+}
+
 export async function listPublicStories(limit = 8): Promise<PublicStory[]> {
   const db = getDb();
+  // 같은 후원자(name+phone) 가 여러 학생을 후원한 경우 가장 빠른 1건만 보여
+  // 다양한 후원자가 노출되도록 한다.
   const res = await db.execute({
-    sql: `SELECT s.id, s.message, s.name, s.created_at, st.alias_name, st.grade
-          FROM sponsors s
-          JOIN students st ON st.id = s.student_id
-          WHERE s.message_public = 1 AND s.message IS NOT NULL AND s.message != ''
-            AND s.status IN ('PAID','PENDING')
-          ORDER BY s.created_at DESC
+    sql: `SELECT id, message, name, created_at, alias_name, grade FROM (
+            SELECT s.id, s.message, s.name, s.phone, s.created_at, st.alias_name, st.grade,
+                   ROW_NUMBER() OVER (PARTITION BY s.name, s.phone ORDER BY s.id) AS rn
+            FROM sponsors s
+            JOIN students st ON st.id = s.student_id
+            WHERE s.message_public = 1 AND s.message IS NOT NULL AND s.message != ''
+              AND s.status IN ('PAID','PENDING')
+          )
+          WHERE rn = 1
+          ORDER BY created_at DESC
           LIMIT ?`,
     args: [limit],
   });
-  return res.rows.map(r => ({
-    id: Number(r.id),
-    message: String(r.message),
-    sponsor_initial: String(r.name).slice(0, 1),
-    student_alias: String(r.alias_name),
-    student_grade: r.grade as PublicStory['student_grade'],
-    created_at: String(r.created_at),
-  }));
+  return res.rows.map(r => {
+    const fullName = String(r.name);
+    return {
+      id: Number(r.id),
+      message: String(r.message),
+      sponsor_initial: fullName.slice(0, 1),
+      sponsor_name_masked: maskKoreanName(fullName),
+      student_alias: String(r.alias_name),
+      student_grade: r.grade as PublicStory['student_grade'],
+      created_at: String(r.created_at),
+    };
+  });
 }
 
 export async function listGallery(limit?: number): Promise<GalleryItem[]> {

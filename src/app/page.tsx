@@ -132,7 +132,7 @@ export default async function HomePage() {
                     {s.sponsor_initial}
                   </div>
                   <div className="text-sm">
-                    <strong className="block text-white">익명의 후원자</strong>
+                    <strong className="block text-white">{s.sponsor_name_masked} 후원자</strong>
                     <span className="text-white/60 text-xs">{s.student_alias} ({s.student_grade})와 결연</span>
                   </div>
                 </div>

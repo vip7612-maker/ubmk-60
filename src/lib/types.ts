@@ -53,6 +53,7 @@ export interface PublicStory {
   id: number;
   message: string;
   sponsor_initial: string;
+  sponsor_name_masked: string;   // 황재순 → 황*순
   student_alias: string;
   student_grade: Grade;
   created_at: string;
