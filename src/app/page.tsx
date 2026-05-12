@@ -6,6 +6,8 @@ import ProgressCard from '@/components/ProgressCard';
 import { listPublicStudents, getStats, listPublicStories, listGallery } from '@/lib/queries';
 
 const HERO_IMAGES = [
+  // UBMK 학교 외관 (소개 영상에서 추출)
+  'https://uuok0m63gzmwa2xv.public.blob.vercel-storage.com/gallery/ubmk-campus-1778544350497.jpg',
   'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1920&q=80',
   'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1920&q=80',
   'https://images.unsplash.com/photo-1497486751825-1233686d5d80?w=1920&q=80',
