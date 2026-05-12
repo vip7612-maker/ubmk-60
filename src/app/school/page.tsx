@@ -29,25 +29,56 @@ export default async function SchoolPage() {
       </section>
 
       {/* === 설립 배경 === */}
-      <section id="설립배경" className="py-20 max-w-[1000px] mx-auto px-6 scroll-mt-24">
-        <div className="border-l-4 border-blue-700 pl-5 mb-8">
-          <h2 className="text-3xl font-extrabold text-blue-700">설립 배경</h2>
-        </div>
-        <div className="space-y-5 text-ink-700 leading-relaxed text-[1.02rem]">
-          <p>
-            1990년 개방과 함께 몽골에 들어간 한인 선교사들은 자녀들을 현지학교 또는 국제학교에 보냈다.
-            선교사 자녀(MK)들은 큰 문화적 차이와 언어 적응의 문제, 높은 교육비로 적지 않은 어려움을 겪었다.
-          </p>
-          <p>
-            그러던 중 1997년 IMF가 터지면서 많은 선교사들은 재정적 어려움을 겪게 되었다.
-            몽골한인선교사회에서는 우리의 자녀들을 <strong>&lsquo;우리의 언어로&rsquo;</strong>,
-            <strong> &lsquo;우리의 신앙과 국가적 정체성을 형성하도록 하는 학교&rsquo;</strong>를 세우기로 마음을 모았다.
-          </p>
-          <p>
-            이후 <strong className="text-blue-700">1998년 5월 MK학교 설립을 결의</strong>하고,
-            7명으로 이뤄진 설립추진위원회를 구성하여
-            동년 <strong className="text-blue-700">9월 9일에 UBMK SCHOOL을 개교</strong>하게 되었다.
-          </p>
+      <section id="설립배경" className="py-20 max-w-[1240px] mx-auto px-6 scroll-mt-24">
+        <div className="grid grid-cols-1 md:grid-cols-[340px_1fr] gap-10 items-start">
+          {/* 좌측: 학교 전경 + 홈페이지 바로가기 */}
+          <aside className="md:sticky md:top-24 space-y-4">
+            <div className="rounded-2xl overflow-hidden shadow-soft border border-ink-100 bg-ink-900">
+              <img
+                src="https://uuok0m63gzmwa2xv.public.blob.vercel-storage.com/gallery/ubmk-campus-1778544350497.jpg"
+                alt="UBMK 학교 전경"
+                className="w-full h-64 object-cover"
+              />
+            </div>
+            <a
+              href="https://ubmk.net/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between gap-2 w-full bg-blue-700 hover:bg-blue-900 text-white font-bold px-5 py-3.5 rounded-2xl shadow-[0_8px_20px_-8px_rgba(29,78,216,.55)] transition-all hover:-translate-y-0.5"
+            >
+              <span className="flex items-center gap-2">
+                <span className="text-lg">🌐</span>
+                <span>홈페이지 바로가기</span>
+              </span>
+              <span aria-hidden>↗</span>
+            </a>
+            <p className="text-xs text-ink-500 px-1">
+              UBMK 학교 공식 홈페이지로 이동합니다 (ubmk.net)
+            </p>
+          </aside>
+
+          {/* 우측: 설립 배경 본문 */}
+          <div>
+            <div className="border-l-4 border-blue-700 pl-5 mb-8">
+              <h2 className="text-3xl font-extrabold text-blue-700">설립 배경</h2>
+            </div>
+            <div className="space-y-5 text-ink-700 leading-relaxed text-[1.02rem]">
+              <p>
+                1990년 개방과 함께 몽골에 들어간 한인 선교사들은 자녀들을 현지학교 또는 국제학교에 보냈다.
+                선교사 자녀(MK)들은 큰 문화적 차이와 언어 적응의 문제, 높은 교육비로 적지 않은 어려움을 겪었다.
+              </p>
+              <p>
+                그러던 중 1997년 IMF가 터지면서 많은 선교사들은 재정적 어려움을 겪게 되었다.
+                몽골한인선교사회에서는 우리의 자녀들을 <strong>&lsquo;우리의 언어로&rsquo;</strong>,
+                <strong> &lsquo;우리의 신앙과 국가적 정체성을 형성하도록 하는 학교&rsquo;</strong>를 세우기로 마음을 모았다.
+              </p>
+              <p>
+                이후 <strong className="text-blue-700">1998년 5월 MK학교 설립을 결의</strong>하고,
+                7명으로 이뤄진 설립추진위원회를 구성하여
+                동년 <strong className="text-blue-700">9월 9일에 UBMK SCHOOL을 개교</strong>하게 되었다.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
