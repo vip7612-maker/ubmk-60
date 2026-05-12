@@ -12,7 +12,7 @@ export default function StudentsBrowser({ students, completed }: { students: Pub
   const [grade, setGrade] = useState<string>('all');
   const [career, setCareer] = useState<string>('all');
   const [status, setStatus] = useState<StatusFilter>('all');
-  const [sort, setSort] = useState<SortOption>('id');
+  const [sort, setSort] = useState<SortOption>('waiting');
 
   const total = students.length;
   const waiting = total - completed;
@@ -43,7 +43,11 @@ export default function StudentsBrowser({ students, completed }: { students: Pub
     }
     const sorted = [...list];
     if (sort === 'id') sorted.sort((a, b) => a.id - b.id);
-    if (sort === 'waiting') sorted.sort((a, b) => Number(a.status === 'COMPLETED') - Number(b.status === 'COMPLETED'));
+    if (sort === 'waiting') sorted.sort((a, b) => {
+      const sa = a.status === 'COMPLETED' ? 1 : 0;
+      const sb = b.status === 'COMPLETED' ? 1 : 0;
+      return sa !== sb ? sa - sb : a.id - b.id;   // WAITING 먼저, 같은 status는 id 오름차순
+    });
     if (sort === 'recent') sorted.sort((a, b) => b.id - a.id);
     if (sort === 'grade') sorted.sort((a, b) => GRADE_OPTIONS.indexOf(a.grade) - GRADE_OPTIONS.indexOf(b.grade));
     return sorted;
