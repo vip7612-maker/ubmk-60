@@ -66,10 +66,28 @@ export default async function SchoolPage() {
         </div>
       </section>
 
-      {/* === 학교 사진 === */}
+      {/* === 학교 소개 영상 === */}
       <section className="py-20 max-w-[1240px] mx-auto px-6">
-        <div className="rounded-[1.5rem] overflow-hidden shadow-lift mb-16">
-          <img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=1200&q=80" alt="UBMK 학교" className="w-full h-[360px] object-cover" />
+        <div className="text-center mb-6">
+          <span className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.1em] uppercase text-blue-700 bg-blue-50 px-3.5 py-1.5 rounded-full">
+            🎬 UBMK 소개 영상
+          </span>
+          <h2 className="text-2xl md:text-3xl font-extrabold mt-3 mb-2">UBMK를 영상으로 만나보세요</h2>
+        </div>
+        <div className="rounded-[1.5rem] overflow-hidden shadow-lift mb-16 bg-ink-900">
+          <video
+            controls
+            preload="metadata"
+            playsInline
+            className="w-full h-auto block"
+            style={{ aspectRatio: '16 / 9' }}
+          >
+            <source
+              src="https://uuok0m63gzmwa2xv.public.blob.vercel-storage.com/video/ubmk-intro-1778544144841.mp4"
+              type="video/mp4"
+            />
+            영상을 재생할 수 없습니다. 최신 브라우저에서 다시 시도해 주세요.
+          </video>
         </div>
 
         <h2 className="text-3xl font-extrabold mb-2 text-center">📸 학교 갤러리</h2>
