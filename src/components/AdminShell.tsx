@@ -9,6 +9,7 @@ const NAV = [
   { href: '/admin/notifications',label: '발송 관리', icon: '📨' },
   { href: '/admin/students',     label: '학생 관리', icon: '🎓' },
   { href: '/admin/gallery',      label: '갤러리',   icon: '📷' },
+  { href: '/admin/settings',     label: '설정',     icon: '⚙️' },
 ];
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {

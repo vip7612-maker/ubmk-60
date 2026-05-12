@@ -135,19 +135,46 @@ function normalizePhone(p: string): string {
 
 /**
  * Send the daily admin briefing SMS to one or more recipients.
- * Recipients come from BRIEFING_RECIPIENTS (comma-separated phone numbers).
+ *
+ * Recipient resolution order:
+ *   1) `briefing_recipients` table (enabled=1) — managed via /admin/settings
+ *   2) BRIEFING_RECIPIENTS env (comma-separated, legacy fallback)
+ *   3) SOLAPI_SENDER (final fallback so we never silently skip)
  */
+export interface BriefingRecipient {
+  name?: string;
+  phone: string;
+}
 export interface BriefingResult {
   sent: number;
   failed: number;
-  details: Array<{ to: string; ok: boolean; error?: string }>;
+  details: Array<{ to: string; name?: string; ok: boolean; error?: string }>;
+}
+
+export async function loadBriefingRecipients(): Promise<BriefingRecipient[]> {
+  const { getDb } = await import('./db');
+  try {
+    const db = getDb();
+    const res = await db.execute(
+      "SELECT name, phone FROM briefing_recipients WHERE enabled = 1 ORDER BY id ASC"
+    );
+    if (res.rows.length > 0) {
+      return res.rows.map(r => ({
+        name: r.name ? String(r.name) : undefined,
+        phone: String(r.phone),
+      }));
+    }
+  } catch (e) {
+    console.warn('[briefing] DB recipients lookup failed, falling back to env:', e);
+  }
+  const envRaw = process.env.BRIEFING_RECIPIENTS || process.env.SOLAPI_SENDER || '';
+  return envRaw.split(',').map(s => s.trim()).filter(Boolean).map(phone => ({ phone }));
 }
 
 export async function sendAdminBriefing(ctx: BriefingContext): Promise<BriefingResult> {
   const apiKey = process.env.SOLAPI_API_KEY;
   const apiSecret = process.env.SOLAPI_API_SECRET;
   const sender = process.env.SOLAPI_SENDER;
-  const recipientsRaw = process.env.BRIEFING_RECIPIENTS || process.env.SOLAPI_SENDER || '';
 
   const result: BriefingResult = { sent: 0, failed: 0, details: [] };
 
@@ -155,13 +182,9 @@ export async function sendAdminBriefing(ctx: BriefingContext): Promise<BriefingR
     throw new Error('Solapi env not configured (SOLAPI_API_KEY/SECRET/SENDER)');
   }
 
-  const recipients = recipientsRaw
-    .split(',')
-    .map(s => normalizePhone(s.trim()))
-    .filter(Boolean);
-
+  const recipients = await loadBriefingRecipients();
   if (recipients.length === 0) {
-    throw new Error('No BRIEFING_RECIPIENTS configured');
+    throw new Error('등록된 브리핑 수신자가 없습니다. 관리자 설정에서 추가해 주세요.');
   }
 
   const svc = new SolapiMessageService(apiKey, apiSecret);
@@ -169,16 +192,22 @@ export async function sendAdminBriefing(ctx: BriefingContext): Promise<BriefingR
   const subject = buildBriefingSubject();
   const from = normalizePhone(sender);
 
-  for (const to of recipients) {
+  for (const r of recipients) {
+    const to = normalizePhone(r.phone);
+    if (!to) {
+      result.failed++;
+      result.details.push({ to: r.phone, name: r.name, ok: false, error: 'invalid phone' });
+      continue;
+    }
     try {
       await svc.send({ to, from, text, subject, type: 'LMS' });
       result.sent++;
-      result.details.push({ to, ok: true });
+      result.details.push({ to, name: r.name, ok: true });
     } catch (err) {
       result.failed++;
       const msg = err instanceof Error ? err.message : 'send failed';
-      result.details.push({ to, ok: false, error: msg });
-      console.error(`[briefing] failed to ${to}:`, msg);
+      result.details.push({ to, name: r.name, ok: false, error: msg });
+      console.error(`[briefing] failed to ${r.name || to}:`, msg);
     }
   }
 

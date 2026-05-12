@@ -77,3 +77,14 @@ CREATE TABLE IF NOT EXISTS gallery (
 
 CREATE INDEX IF NOT EXISTS idx_gallery_category   ON gallery(category);
 CREATE INDEX IF NOT EXISTS idx_gallery_sort_order ON gallery(sort_order);
+
+-- 일일 신청자 브리핑 SMS 수신자 (관리자 페이지에서 CRUD)
+CREATE TABLE IF NOT EXISTS briefing_recipients (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  name        TEXT NOT NULL,                       -- 예: '이경진 교장'
+  phone       TEXT NOT NULL,                       -- 예: '010-9588-8761' (저장 형식 자유, 발송 시 정규화)
+  role        TEXT,                                -- 예: '교장' / '운영팀' (선택)
+  enabled     INTEGER NOT NULL DEFAULT 1,          -- 0/1 boolean
+  created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_briefing_recipients_enabled ON briefing_recipients(enabled);
