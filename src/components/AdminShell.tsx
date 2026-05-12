@@ -4,10 +4,11 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
 const NAV = [
-  { href: '/admin',           label: '대시보드',   icon: '📊' },
-  { href: '/admin/sponsors',  label: '결연 신청',   icon: '💝' },
-  { href: '/admin/students',  label: '학생 관리',   icon: '🎓' },
-  { href: '/admin/gallery',   label: '갤러리',     icon: '📷' },
+  { href: '/admin',              label: '대시보드',  icon: '📊' },
+  { href: '/admin/sponsors',     label: '결연 신청', icon: '💝' },
+  { href: '/admin/notifications',label: '발송 관리', icon: '📨' },
+  { href: '/admin/students',     label: '학생 관리', icon: '🎓' },
+  { href: '/admin/gallery',      label: '갤러리',   icon: '📷' },
 ];
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {

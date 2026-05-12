@@ -1,6 +1,13 @@
 export type StudentStatus = 'WAITING' | 'COMPLETED';
 export type Grade = '중1' | '중2' | '중3' | '고1' | '고2' | '고3';
 export type SponsorStatus = 'PENDING' | 'PAID' | 'CANCELED';
+export type SponsorshipType = 'ONETIME' | 'INSTALLMENT';
+export type NotificationChannel = 'SMS' | 'EMAIL';
+export type NotificationStatus = 'SENT' | 'FAILED';
+
+export const INSTALLMENT_TOTAL_COUNT = 10;
+export const INSTALLMENT_AMOUNT_PER = 50_000;       // 5만원
+export const ONETIME_AMOUNT = 500_000;              // 50만원
 export type GalleryCategory = 'class' | 'event' | 'facility' | 'general';
 
 export interface Student {
@@ -47,6 +54,25 @@ export interface Sponsor {
   status: SponsorStatus;
   created_at: string;
   paid_at: string | null;
+  sponsorship_type: SponsorshipType;
+  total_amount: number;
+  installment_total: number;
+  installment_paid: number;
+  next_due_day: number | null;
+  last_notified_at: string | null;
+}
+
+export interface NotificationLog {
+  id: number;
+  sponsor_id: number;
+  channel: NotificationChannel;
+  recipient: string;
+  subject: string | null;
+  body: string;
+  installment_number: number | null;
+  status: NotificationStatus;
+  error_message: string | null;
+  sent_at: string;
 }
 
 export interface PublicStory {

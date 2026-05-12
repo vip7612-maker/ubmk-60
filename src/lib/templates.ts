@@ -1,7 +1,11 @@
 import 'server-only';
+import type { SponsorshipType } from './types';
 
 const PROJECT_NAME = '크롬북 한 대, 공정한 교육기회';
-const SPONSOR_AMOUNT = '500,000';
+const ONETIME_AMOUNT_STR = '500,000';
+const INSTALL_PER_STR = '50,000';
+const INSTALL_TOTAL_STR = '500,000';
+const INSTALL_COUNT = 10;
 
 export interface TemplateContext {
   sponsorName: string;
@@ -11,6 +15,16 @@ export interface TemplateContext {
   bankAccount?: string;
   contactPhone?: string;
   contactEmail?: string;
+  sponsorshipType?: SponsorshipType;     // 'ONETIME' | 'INSTALLMENT'
+  installmentNumber?: number;            // N회차 안내인 경우 (1~10)
+  installmentTotal?: number;             // 총 N회 (보통 10)
+}
+
+function paymentSummary(ctx: TemplateContext): string {
+  if (ctx.sponsorshipType === 'INSTALLMENT') {
+    return `${INSTALL_PER_STR}원 × ${INSTALL_COUNT}회 (총 ${INSTALL_TOTAL_STR}원) — 분할 후원`;
+  }
+  return `${ONETIME_AMOUNT_STR}원 (크롬북 1대) — 일시 후원`;
 }
 
 /* ================================
@@ -22,6 +36,7 @@ export function buildSmsBody(ctx: TemplateContext): string {
     : '* 입금 계좌는 곧 별도로 안내드립니다.';
   const phone = ctx.contactPhone?.trim() || '';
   const email = ctx.contactEmail?.trim() || '';
+  const isInstall = ctx.sponsorshipType === 'INSTALLMENT';
 
   return [
     `[${PROJECT_NAME}]`,
@@ -29,13 +44,15 @@ export function buildSmsBody(ctx: TemplateContext): string {
     `${ctx.sponsorName}님, 결연 신청해주셔서 진심으로 감사합니다 💝`,
     '',
     `▣ 결연 학생: ${ctx.studentAlias} (${ctx.studentGrade})`,
-    `▣ 후원 금액: ${SPONSOR_AMOUNT}원 (크롬북 1대)`,
+    `▣ 후원 방식: ${paymentSummary(ctx)}`,
     '',
     '▼ 입금 안내',
     bank,
     '',
-    '입금이 확인되면 결연이 정식 완료되며,',
-    '학생의 학습 진행 상황을 분기별로 안내드립니다.',
+    isInstall
+      ? '매월 같은 날(신청일)에 다음 회차 입금 안내를 자동으로 보내드립니다.'
+      : '입금이 확인되면 결연이 정식 완료되며,',
+    isInstall ? '입금이 확인되면 회차 진행 상황을 알려드립니다.' : '학생의 학습 진행 상황을 분기별로 안내드립니다.',
     '',
     phone ? `문의: ${phone}` : '',
     email ? `이메일: ${email}` : '',
@@ -44,6 +61,68 @@ export function buildSmsBody(ctx: TemplateContext): string {
 
 export function buildSmsSubject(): string {
   return `[${PROJECT_NAME}] 결연 신청 안내`;
+}
+
+/* --- 분할 후원 회차 안내 (Cron) --- */
+export function buildInstallmentReminderSms(ctx: TemplateContext): string {
+  const n = ctx.installmentNumber ?? 0;
+  const total = ctx.installmentTotal ?? INSTALL_COUNT;
+  const bank = ctx.bankAccount?.trim() || '* 입금 계좌는 별도 안내된 계좌로 입금 부탁드립니다.';
+  return [
+    `[${PROJECT_NAME}] ${n}/${total}회 분할 입금 안내`,
+    '',
+    `${ctx.sponsorName}님, 이번 달 분할 후원 입금일이 도래했습니다.`,
+    '',
+    `▣ 결연 학생: ${ctx.studentAlias} (${ctx.studentGrade})`,
+    `▣ 이번 회차: ${n}회 / ${total}회 (${INSTALL_PER_STR}원)`,
+    '',
+    '▼ 입금 계좌',
+    bank,
+    '',
+    '입금이 확인되면 회차 진행 상황이 업데이트됩니다. 감사합니다 💛',
+  ].filter(Boolean).join('\n');
+}
+
+export function buildInstallmentReminderSubject(ctx: TemplateContext): string {
+  const n = ctx.installmentNumber ?? 0;
+  const total = ctx.installmentTotal ?? INSTALL_COUNT;
+  return `[${PROJECT_NAME}] ${ctx.sponsorName}님 — ${n}/${total}회 분할 입금 안내`;
+}
+
+export function buildInstallmentReminderHtml(ctx: TemplateContext): string {
+  const n = ctx.installmentNumber ?? 0;
+  const total = ctx.installmentTotal ?? INSTALL_COUNT;
+  const bank = ctx.bankAccount?.trim() || '* 입금 계좌는 별도 안내된 계좌로 입금 부탁드립니다.';
+  return `<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8" /><title>${escapeHtml(buildInstallmentReminderSubject(ctx))}</title></head>
+<body style="margin:0;padding:0;background:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Noto Sans KR',sans-serif;color:#0f172a;line-height:1.6;">
+  <div style="max-width:600px;margin:0 auto;padding:24px 16px;">
+    <div style="background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 100%);border-radius:20px;padding:32px 28px;text-align:center;color:#fff;">
+      <div style="font-size:13px;letter-spacing:.15em;font-weight:700;text-transform:uppercase;color:#fbbf24;margin-bottom:10px;">
+        분할 후원 안내 · ${n}/${total}회
+      </div>
+      <div style="font-size:22px;font-weight:800;letter-spacing:-.02em;white-space:nowrap;">
+        ${escapeHtml(ctx.sponsorName)}님, 이번 달도 함께해 주세요 💛
+      </div>
+    </div>
+    <div style="background:#fff;border-radius:20px;margin-top:16px;padding:28px;border:1px solid #e2e8f0;">
+      <p style="margin:0 0 12px;color:#334155;">
+        ${escapeHtml(ctx.studentAlias)} (${escapeHtml(ctx.studentGrade)}) 학생과의 분할 후원 ${n}회차 입금일이 도래했습니다.
+      </p>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;margin-top:12px;">
+        <tr><td style="padding:10px 0;color:#64748b;font-weight:600;width:35%;">이번 회차</td>
+            <td style="padding:10px 0;color:#1d4ed8;font-weight:800;font-size:18px;">${n}회 / ${total}회</td></tr>
+        <tr><td style="padding:10px 0;color:#64748b;font-weight:600;border-top:1px solid #f1f5f9;">금액</td>
+            <td style="padding:10px 0;font-weight:700;border-top:1px solid #f1f5f9;">${INSTALL_PER_STR}원</td></tr>
+        <tr><td style="padding:10px 0;color:#64748b;font-weight:600;border-top:1px solid #f1f5f9;">입금 계좌</td>
+            <td style="padding:10px 0;font-weight:700;border-top:1px solid #f1f5f9;white-space:pre-line;">${escapeHtml(bank)}</td></tr>
+      </table>
+    </div>
+    <div style="text-align:center;margin-top:16px;padding:16px;color:#94a3b8;font-size:11px;line-height:1.6;">
+      © 2026 크롬북 한 대, 공정한 교육기회<br/>몽골 울란바타르 UBMK 학교 후원 프로젝트
+    </div>
+  </div>
+</body></html>`;
 }
 
 /* ================================
@@ -108,8 +187,8 @@ export function buildEmailHtml(ctx: TemplateContext): string {
       <h2 style="font-size:16px;margin:0 0 16px;font-weight:800;">▼ 후원 입금 안내</h2>
       <table style="width:100%;border-collapse:collapse;font-size:14px;">
         <tr>
-          <td style="padding:10px 0;color:#64748b;font-weight:600;width:35%;">후원 금액</td>
-          <td style="padding:10px 0;color:#1d4ed8;font-weight:800;font-size:18px;">${SPONSOR_AMOUNT}원</td>
+          <td style="padding:10px 0;color:#64748b;font-weight:600;width:35%;">후원 방식</td>
+          <td style="padding:10px 0;color:#1d4ed8;font-weight:800;font-size:16px;">${escapeHtml(paymentSummary(ctx))}</td>
         </tr>
         <tr>
           <td style="padding:10px 0;color:#64748b;font-weight:600;border-top:1px solid #f1f5f9;">입금 계좌</td>

@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { sendSponsorNotifications } from '@/lib/notifications';
-import { gradeToLabel, type Grade } from '@/lib/types';
+import {
+  gradeToLabel, type Grade, type SponsorshipType,
+  ONETIME_AMOUNT, INSTALLMENT_AMOUNT_PER, INSTALLMENT_TOTAL_COUNT,
+} from '@/lib/types';
 
 export const runtime = 'nodejs';
 
@@ -12,6 +15,7 @@ interface SponsorBody {
   email?: string;
   message?: string;
   messagePublic?: boolean;
+  sponsorshipType?: SponsorshipType;     // 'ONETIME' | 'INSTALLMENT' (기본 ONETIME)
 }
 
 export async function POST(request: Request) {
@@ -19,6 +23,8 @@ export async function POST(request: Request) {
   try { body = await request.json(); } catch { return NextResponse.json({ error: '잘못된 요청' }, { status: 400 }); }
 
   const { studentId, name, phone, email, message, messagePublic } = body;
+  const sponsorshipType: SponsorshipType =
+    body.sponsorshipType === 'INSTALLMENT' ? 'INSTALLMENT' : 'ONETIME';
 
   if (!studentId || !name?.trim() || !phone?.trim() || !email?.trim()) {
     return NextResponse.json({ error: '필수 항목이 누락되었습니다.' }, { status: 400 });
@@ -43,14 +49,28 @@ export async function POST(request: Request) {
   }
   const student = studentRes.rows[0];
 
-  // Insert sponsor with PENDING status (admin will mark PAID after deposit confirmation)
+  // 분할 후원: 신청 당일 = 매월 안내 날짜 (1~28만 안전; 29~31일은 그 달 말일에 발송되도록 cron에서 처리)
+  const today = new Date();
+  const todayDay = today.getDate();
+  const isInstallment = sponsorshipType === 'INSTALLMENT';
+
+  const totalAmount   = isInstallment ? INSTALLMENT_AMOUNT_PER * INSTALLMENT_TOTAL_COUNT : ONETIME_AMOUNT;
+  const installTotal  = isInstallment ? INSTALLMENT_TOTAL_COUNT : 1;
+  const nextDueDay    = isInstallment ? todayDay : null;
+
   await db.execute({
-    sql: `INSERT INTO sponsors (name, phone, email, message, message_public, student_id, status)
-          VALUES (?, ?, ?, ?, ?, ?, 'PENDING')`,
-    args: [name.trim(), phone.trim(), email.trim(), message?.trim() || null, messagePublic ? 1 : 0, studentId],
+    sql: `INSERT INTO sponsors
+          (name, phone, email, message, message_public, student_id, status,
+           sponsorship_type, total_amount, installment_total, installment_paid, next_due_day)
+          VALUES (?, ?, ?, ?, ?, ?, 'PENDING', ?, ?, ?, 0, ?)`,
+    args: [
+      name.trim(), phone.trim(), email.trim(),
+      message?.trim() || null, messagePublic ? 1 : 0, studentId,
+      sponsorshipType, totalAmount, installTotal, nextDueDay,
+    ],
   });
 
-  // Fire-and-forget notifications (don't block response on notification failures)
+  // 첫 회 안내 SMS + Email (분할이든 일시든 신청 즉시 입금 안내)
   const notify = await sendSponsorNotifications({
     sponsorName: name.trim(),
     studentAlias: String(student.alias_name),
@@ -58,10 +78,15 @@ export async function POST(request: Request) {
     studentDream: student.dream_summary as string | null,
     toPhone: phone.trim(),
     toEmail: email.trim(),
+    sponsorshipType,
   });
 
   return NextResponse.json({
     success: true,
+    sponsorshipType,
+    totalAmount,
+    installmentTotal: installTotal,
+    nextDueDay,
     notifications: { sms: notify.sms.sent, email: notify.email.sent },
   });
 }

@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { PublicStudent } from '@/lib/types';
+import type { PublicStudent, SponsorshipType } from '@/lib/types';
 import { gradeToLabel } from '@/lib/types';
+
+const TODAY_DAY = new Date().getDate();
 
 export default function SponsorModal({ student, onClose }: {
   student: PublicStudent;
@@ -12,6 +14,7 @@ export default function SponsorModal({ student, onClose }: {
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sponsorshipType, setSponsorshipType] = useState<SponsorshipType>('ONETIME');
   const [form, setForm] = useState({
     name: '', phone: '', email: '', message: '',
     agreePrivacy: false, agreePublic: false,
@@ -36,6 +39,7 @@ export default function SponsorModal({ student, onClose }: {
           email: form.email,
           message: form.message,
           messagePublic: form.agreePublic,
+          sponsorshipType,
         }),
       });
       const data = await res.json();
@@ -73,6 +77,34 @@ export default function SponsorModal({ student, onClose }: {
         <div className="bg-amber-50 border border-amber-100 px-4 py-3 rounded-xl text-[.82rem] text-amber-600 mb-4">
           ℹ️ 신청하시면 입력하신 연락처로<br />문자와 이메일로 후원 안내문이 자동 발송됩니다.
         </div>
+
+        {/* 후원 유형 선택 */}
+        <fieldset className="mb-5">
+          <legend className="block text-sm font-bold text-ink-700 mb-2">후원 방식 선택 <span className="text-red-500">*</span></legend>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <PlanCard
+              selected={sponsorshipType === 'ONETIME'}
+              onClick={() => setSponsorshipType('ONETIME')}
+              badge="추천"
+              title="일시 후원"
+              price="500,000원"
+              hint="한 번에 결제 · 크롬북 1대"
+            />
+            <PlanCard
+              selected={sponsorshipType === 'INSTALLMENT'}
+              onClick={() => setSponsorshipType('INSTALLMENT')}
+              badge="부담 ↓"
+              title="분할 후원"
+              price="50,000원 × 10회"
+              hint={`매월 ${TODAY_DAY}일 자동 안내`}
+            />
+          </div>
+          {sponsorshipType === 'INSTALLMENT' && (
+            <p className="mt-2.5 text-xs text-blue-700 bg-blue-50 border border-blue-100 px-3 py-2 rounded-lg">
+              📅 신청하신 날(<strong>매월 {TODAY_DAY}일</strong>)에 다음 회차 입금 안내가 자동으로 발송됩니다. 총 10회분이 모이면 크롬북 1대가 학생에게 전달됩니다.
+            </p>
+          )}
+        </fieldset>
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm mb-4">
@@ -125,7 +157,9 @@ export default function SponsorModal({ student, onClose }: {
           </button>
 
           <p className="text-center mt-4 text-xs text-ink-500">
-            💳 크롬북 1대 후원 금액: <strong className="text-blue-700">500,000원</strong>
+            💳 {sponsorshipType === 'INSTALLMENT'
+              ? <>분할 후원 1회분: <strong className="text-blue-700">50,000원</strong> × 10회</>
+              : <>크롬북 1대 후원 금액: <strong className="text-blue-700">500,000원</strong></>}
           </p>
         </form>
       </div>
@@ -141,5 +175,38 @@ function Field({ label, required, children }: { label: string; required?: boolea
       </label>
       {children}
     </div>
+  );
+}
+
+function PlanCard({ selected, onClick, badge, title, price, hint }: {
+  selected: boolean;
+  onClick: () => void;
+  badge?: string;
+  title: string;
+  price: string;
+  hint: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`relative text-left p-4 rounded-xl border-2 transition-all ${
+        selected
+          ? 'border-blue-700 bg-blue-50 shadow-[0_4px_12px_-6px_rgba(29,78,216,.4)]'
+          : 'border-ink-200 bg-white hover:border-ink-300'
+      }`}
+      aria-pressed={selected}
+    >
+      {badge && (
+        <span className={`absolute top-2.5 right-2.5 text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
+          selected ? 'bg-blue-700 text-white' : 'bg-amber-100 text-amber-700'
+        }`}>
+          {badge}
+        </span>
+      )}
+      <div className={`text-sm font-bold ${selected ? 'text-blue-700' : 'text-ink-900'}`}>{title}</div>
+      <div className="text-base font-extrabold mt-1.5">{price}</div>
+      <div className="text-xs text-ink-500 mt-1">{hint}</div>
+    </button>
   );
 }

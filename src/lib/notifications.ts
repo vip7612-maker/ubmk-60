@@ -4,6 +4,7 @@ import { Resend } from 'resend';
 import {
   buildSmsBody, buildSmsSubject,
   buildEmailHtml, buildEmailSubject,
+  buildInstallmentReminderSms, buildInstallmentReminderSubject, buildInstallmentReminderHtml,
   type TemplateContext,
 } from './templates';
 
@@ -15,6 +16,8 @@ interface NotifyContext extends TemplateContext {
 export interface NotifyResult {
   sms: { sent: boolean; error?: string };
   email: { sent: boolean; error?: string };
+  smsBody?: string;
+  emailSubject?: string;
 }
 
 /**
@@ -35,6 +38,48 @@ export async function sendSponsorNotifications(ctx: NotifyContext): Promise<Noti
     contactEmail: ctx.contactEmail ?? process.env.CONTACT_EMAIL,
   };
 
+  const smsBody = buildSmsBody(fullCtx);
+  const emailSubject = buildEmailSubject(fullCtx);
+  const emailHtml = buildEmailHtml(fullCtx);
+  result.smsBody = smsBody;
+  result.emailSubject = emailSubject;
+
+  await dispatch(result, ctx.toPhone, ctx.toEmail, smsBody, buildSmsSubject(), emailSubject, emailHtml);
+  return result;
+}
+
+/**
+ * 분할 후원 회차 안내 (Cron에서 호출).
+ * sendSponsorNotifications와 시그니처는 같지만 본문은 회차 입금 안내 톤.
+ */
+export async function sendInstallmentReminder(ctx: NotifyContext): Promise<NotifyResult> {
+  const result: NotifyResult = { sms: { sent: false }, email: { sent: false } };
+  const fullCtx: TemplateContext = {
+    ...ctx,
+    bankAccount: ctx.bankAccount ?? process.env.BANK_ACCOUNT_INFO,
+    contactPhone: ctx.contactPhone ?? process.env.CONTACT_PHONE,
+    contactEmail: ctx.contactEmail ?? process.env.CONTACT_EMAIL,
+  };
+  const smsBody = buildInstallmentReminderSms(fullCtx);
+  const subject = buildInstallmentReminderSubject(fullCtx);
+  const emailHtml = buildInstallmentReminderHtml(fullCtx);
+  result.smsBody = smsBody;
+  result.emailSubject = subject;
+
+  await dispatch(result, ctx.toPhone, ctx.toEmail, smsBody, subject, subject, emailHtml);
+  return result;
+}
+
+/** SMS+Email 발송 + 실패 처리를 공통화. */
+async function dispatch(
+  result: NotifyResult,
+  toPhone: string,
+  toEmail: string,
+  smsBody: string,
+  smsSubject: string,
+  emailSubject: string,
+  emailHtml: string,
+) {
   // ---- SMS via Solapi ----
   const apiKey = process.env.SOLAPI_API_KEY;
   const apiSecret = process.env.SOLAPI_API_SECRET;
@@ -43,10 +88,10 @@ export async function sendSponsorNotifications(ctx: NotifyContext): Promise<Noti
     try {
       const svc = new SolapiMessageService(apiKey, apiSecret);
       await svc.send({
-        to: normalizePhone(ctx.toPhone),
+        to: normalizePhone(toPhone),
         from: normalizePhone(sender),
-        text: buildSmsBody(fullCtx),
-        subject: buildSmsSubject(),
+        text: smsBody,
+        subject: smsSubject,
         type: 'LMS',
       });
       result.sms.sent = true;
@@ -56,20 +101,19 @@ export async function sendSponsorNotifications(ctx: NotifyContext): Promise<Noti
     }
   } else {
     result.sms.error = 'Solapi env not configured';
-    console.warn('[notifications] SMS skipped — SOLAPI_API_KEY/SECRET/SENDER missing');
   }
 
   // ---- Email via Resend ----
   const resendKey = process.env.RESEND_API_KEY;
   const fromEmail = process.env.EMAIL_FROM;
-  if (resendKey && fromEmail) {
+  if (resendKey && fromEmail && toEmail) {
     try {
       const resend = new Resend(resendKey);
       const { error } = await resend.emails.send({
         from: fromEmail,
-        to: ctx.toEmail,
-        subject: buildEmailSubject(fullCtx),
-        html: buildEmailHtml(fullCtx),
+        to: toEmail,
+        subject: emailSubject,
+        html: emailHtml,
       });
       if (error) throw new Error(error.message || JSON.stringify(error));
       result.email.sent = true;
@@ -78,11 +122,8 @@ export async function sendSponsorNotifications(ctx: NotifyContext): Promise<Noti
       console.error('[notifications] Email failed:', result.email.error);
     }
   } else {
-    result.email.error = 'Resend env not configured';
-    console.warn('[notifications] Email skipped — RESEND_API_KEY/EMAIL_FROM missing');
+    result.email.error = 'Resend env not configured or email missing';
   }
-
-  return result;
 }
 
 function normalizePhone(p: string): string {
