@@ -24,7 +24,11 @@ export default async function HomePage() {
     listPublicStories(4),
     listGallery(5),
   ]);
-  const previewStudents = students.slice(0, 6);
+  // 메인 미리보기는 결연을 기다리는 학생을 우선 노출.
+  // 대기 학생이 6명 미만이면 결연 완료 학생으로 채워 빈 자리가 생기지 않게 한다.
+  const waiting = students.filter(s => s.status === 'WAITING');
+  const completed = students.filter(s => s.status === 'COMPLETED');
+  const previewStudents = [...waiting, ...completed].slice(0, 6);
 
   return (
     <>
