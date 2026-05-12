@@ -150,8 +150,10 @@ export default async function HomePage() {
           <span className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.1em] uppercase text-blue-700 bg-blue-50 px-3.5 py-1.5 rounded-full">
             UBMK 학교
           </span>
-          <h2 className="text-4xl font-extrabold mt-4 mb-2">20년간 이어진 교육의 현장</h2>
-          <p className="text-ink-500 text-lg max-w-[640px] mx-auto">울란바타르 바양주르흐 구에 위치한 UBMK는 1,200명 이상의 졸업생을 배출했습니다.</p>
+          <h2 className="text-4xl font-extrabold mt-4 mb-2">1998년부터 이어진 교육의 현장</h2>
+          <p className="text-ink-500 text-lg max-w-[640px] mx-auto">
+            울란바타르 바양주르흐 구에 위치한 UBMK는 유치원부터 고등학교까지 70명의 재학생과 30명의 교직원이 함께하는 선교 학교입니다.
+          </p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12" style={{ gridAutoRows: '200px' }}>
