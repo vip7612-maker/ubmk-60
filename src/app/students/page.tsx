@@ -26,6 +26,13 @@ export default async function StudentsPage() {
             학년·관심 진로로 검색해 마음에 닿는 학생과 1:1 결연하실 수 있습니다.<br />
             각 학생을 클릭하면 그의 손편지와 꿈을 만나실 수 있어요.
           </p>
+          <div className="mt-6 inline-flex items-start gap-2.5 text-sm text-amber-700 bg-amber-50 border border-amber-200 px-4 py-3 rounded-2xl max-w-[640px]">
+            <span aria-hidden className="text-base leading-none mt-0.5">🔒</span>
+            <span>
+              학생 개인정보 보호를 위해 표시되는 모든 이름은 <strong>가명</strong>이에요.
+              실명·연락처는 결연 매칭이 확정된 후원자에게만 별도로 안내드립니다.
+            </span>
+          </div>
         </div>
       </section>
 

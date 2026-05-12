@@ -42,7 +42,10 @@ export default function StudentDetailClient({ student, similarStudents }: {
             </div>
 
             <h1 className="text-3xl font-extrabold mb-1">{student.alias_name}</h1>
-            <p className="text-ink-500 mb-6">{gradeToLabel(student.grade)}{student.age && ` · ${student.age}세`}</p>
+            <p className="text-ink-500 mb-1">{gradeToLabel(student.grade)}{student.age && ` · ${student.age}세`}</p>
+            <p className="text-[11px] text-ink-400 mb-6" title="학생 개인정보 보호를 위해 표시 이름은 가명을 사용합니다.">
+              🔒 가명 (개인정보 보호)
+            </p>
 
             <div className={`p-4 rounded-2xl mb-6 text-sm font-semibold ${
               isCompleted ? 'bg-blue-50 border border-blue-100 text-blue-700' : 'bg-amber-50 border border-amber-100 text-amber-600'
