@@ -5,7 +5,9 @@ import {
   buildSmsBody, buildSmsSubject,
   buildEmailHtml, buildEmailSubject,
   buildInstallmentReminderSms, buildInstallmentReminderSubject, buildInstallmentReminderHtml,
+  buildBriefingBody, buildBriefingSubject,
   type TemplateContext,
+  type BriefingContext,
 } from './templates';
 
 interface NotifyContext extends TemplateContext {
@@ -129,4 +131,56 @@ async function dispatch(
 function normalizePhone(p: string): string {
   // Solapi accepts numeric only (e.g. 01012345678)
   return p.replace(/[^0-9]/g, '');
+}
+
+/**
+ * Send the daily admin briefing SMS to one or more recipients.
+ * Recipients come from BRIEFING_RECIPIENTS (comma-separated phone numbers).
+ */
+export interface BriefingResult {
+  sent: number;
+  failed: number;
+  details: Array<{ to: string; ok: boolean; error?: string }>;
+}
+
+export async function sendAdminBriefing(ctx: BriefingContext): Promise<BriefingResult> {
+  const apiKey = process.env.SOLAPI_API_KEY;
+  const apiSecret = process.env.SOLAPI_API_SECRET;
+  const sender = process.env.SOLAPI_SENDER;
+  const recipientsRaw = process.env.BRIEFING_RECIPIENTS || process.env.SOLAPI_SENDER || '';
+
+  const result: BriefingResult = { sent: 0, failed: 0, details: [] };
+
+  if (!apiKey || !apiSecret || !sender) {
+    throw new Error('Solapi env not configured (SOLAPI_API_KEY/SECRET/SENDER)');
+  }
+
+  const recipients = recipientsRaw
+    .split(',')
+    .map(s => normalizePhone(s.trim()))
+    .filter(Boolean);
+
+  if (recipients.length === 0) {
+    throw new Error('No BRIEFING_RECIPIENTS configured');
+  }
+
+  const svc = new SolapiMessageService(apiKey, apiSecret);
+  const text = buildBriefingBody(ctx);
+  const subject = buildBriefingSubject();
+  const from = normalizePhone(sender);
+
+  for (const to of recipients) {
+    try {
+      await svc.send({ to, from, text, subject, type: 'LMS' });
+      result.sent++;
+      result.details.push({ to, ok: true });
+    } catch (err) {
+      result.failed++;
+      const msg = err instanceof Error ? err.message : 'send failed';
+      result.details.push({ to, ok: false, error: msg });
+      console.error(`[briefing] failed to ${to}:`, msg);
+    }
+  }
+
+  return result;
 }
