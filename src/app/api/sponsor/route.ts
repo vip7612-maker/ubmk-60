@@ -58,7 +58,7 @@ export async function POST(request: Request) {
   const installTotal  = isInstallment ? INSTALLMENT_TOTAL_COUNT : 1;
   const nextDueDay    = isInstallment ? todayDay : null;
 
-  await db.execute({
+  const ins = await db.execute({
     sql: `INSERT INTO sponsors
           (name, phone, email, message, message_public, student_id, status,
            sponsorship_type, total_amount, installment_total, installment_paid, next_due_day)
@@ -68,6 +68,15 @@ export async function POST(request: Request) {
       message?.trim() || null, messagePublic ? 1 : 0, studentId,
       sponsorshipType, totalAmount, installTotal, nextDueDay,
     ],
+  });
+
+  // 입금 대기 중이라도 신청 즉시 학생을 매칭해 통계에 반영한다.
+  // 중복 신청 차단 효과도 있다(다른 후원자가 같은 학생을 신청할 때 'COMPLETED' 체크에 걸림).
+  // 운영자가 admin에서 CANCELED 처리하면 학생은 자동으로 WAITING으로 되돌려진다.
+  const newSponsorId = Number(ins.lastInsertRowid);
+  await db.execute({
+    sql: "UPDATE students SET status = 'COMPLETED', sponsor_id = ? WHERE id = ?",
+    args: [newSponsorId, studentId],
   });
 
   // 첫 회 안내 SMS + Email (분할이든 일시든 신청 즉시 입금 안내)
