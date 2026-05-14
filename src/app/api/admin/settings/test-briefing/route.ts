@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { sendAdminBriefing } from '@/lib/notifications';
-import type { BriefingApplicant } from '@/lib/templates';
-import { gradeToLabel, type Grade, type SponsorshipType } from '@/lib/types';
+import type { BriefingApplicantGroup } from '@/lib/templates';
 
 export const runtime = 'nodejs';
 
@@ -14,13 +13,6 @@ export const runtime = 'nodejs';
  */
 export async function POST() {
   const db = getDb();
-  const totalRes = await db.execute(`
-    SELECT s.name, s.created_at, s.sponsorship_type, st.alias_name, st.grade
-    FROM sponsors s
-    JOIN students st ON st.id = s.student_id
-    WHERE s.status IN ('PENDING','PAID')
-    ORDER BY s.created_at ASC
-  `);
 
   // KST today window
   const now = new Date();
@@ -34,37 +26,48 @@ export async function POST() {
   const startIso = startUtc.toISOString().replace('T', ' ').slice(0, 19);
   const endIso   = endUtc.toISOString().replace('T', ' ').slice(0, 19);
 
-  const todayRes = await db.execute({
-    sql: `
-      SELECT s.name, s.created_at, s.sponsorship_type, st.alias_name, st.grade
-      FROM sponsors s
-      JOIN students st ON st.id = s.student_id
-      WHERE s.created_at BETWEEN ? AND ?
-        AND s.status IN ('PENDING','PAID')
-      ORDER BY s.created_at ASC
-    `,
-    args: [startIso, endIso],
-  });
+  // 후원자별(name+phone) 그룹화 — cron과 동일 로직
+  const groupSql = (where: string) => `
+    SELECT name, phone,
+           COUNT(*) AS cnt,
+           SUM(CASE WHEN sponsorship_type='ONETIME'     THEN 1 ELSE 0 END) AS ot,
+           SUM(CASE WHEN sponsorship_type='INSTALLMENT' THEN 1 ELSE 0 END) AS inst,
+           MIN(created_at) AS first_at
+    FROM sponsors
+    WHERE status IN ('PENDING','PAID') ${where}
+    GROUP BY name, phone
+    ORDER BY first_at ASC
+  `;
+  const [todayRes, totalRes] = await Promise.all([
+    db.execute({ sql: groupSql('AND created_at BETWEEN ? AND ?'), args: [startIso, endIso] }),
+    db.execute(groupSql('')),
+  ]);
 
-  const toApplicant = (r: Record<string, unknown>): BriefingApplicant => ({
-    name: String(r.name),
-    student_alias: String(r.alias_name),
-    student_grade: gradeToLabel(r.grade as Grade),
-    created_at: String(r.created_at),
-    sponsorship_type: (String(r.sponsorship_type) === 'INSTALLMENT' ? 'INSTALLMENT' : 'ONETIME') as SponsorshipType,
-  });
-
-  const todayApplicants = todayRes.rows.map(r => toApplicant(r as Record<string, unknown>));
-  const totalApplicants = totalRes.rows.map(r => toApplicant(r as Record<string, unknown>));
+  const toGroup = (r: Record<string, unknown>): BriefingApplicantGroup => {
+    const ot = Number(r.ot), inst = Number(r.inst);
+    return {
+      name: String(r.name),
+      count: Number(r.cnt),
+      type_label: ot && inst ? '혼합' : (ot ? '일시' : '분할'),
+      first_created_at: String(r.first_at),
+    };
+  };
+  const todayGroups = todayRes.rows.map(r => toGroup(r as Record<string, unknown>));
+  const totalGroups = totalRes.rows.map(r => toGroup(r as Record<string, unknown>));
 
   const adminUrl =
     (process.env.NEXT_PUBLIC_SITE_URL ||
-      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://ubmk-60.vercel.app')) +
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://ubmk-70.vercel.app')) +
     '/admin/sponsors';
 
   try {
-    const result = await sendAdminBriefing({ todayApplicants, totalApplicants, adminUrl });
-    return NextResponse.json({ ok: true, ...result, todayCount: todayApplicants.length, totalCount: totalApplicants.length });
+    const result = await sendAdminBriefing({ todayGroups, totalGroups, adminUrl });
+    return NextResponse.json({
+      ok: true,
+      ...result,
+      todayCount: todayGroups.length,
+      totalCount: totalGroups.length,
+    });
   } catch (err) {
     return NextResponse.json(
       { ok: false, error: err instanceof Error ? err.message : 'send failed' },

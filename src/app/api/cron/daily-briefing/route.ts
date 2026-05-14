@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { sendAdminBriefing } from '@/lib/notifications';
-import type { BriefingApplicant } from '@/lib/templates';
-import { gradeToLabel, type Grade, type SponsorshipType } from '@/lib/types';
+import type { BriefingApplicantGroup } from '@/lib/templates';
 
 export const runtime = 'nodejs';
 // Cron only — no caching
@@ -49,37 +48,35 @@ export async function GET(req: Request) {
   // ---- Query DB ----
   const db = getDb();
 
+  // 후원자별(name+phone) 그룹화 — 한 사람이 N명 후원하면 1줄 (N명, 일시/분할/혼합)
+  const groupSql = (where: string) => `
+    SELECT name, phone,
+           COUNT(*) AS cnt,
+           SUM(CASE WHEN sponsorship_type='ONETIME'     THEN 1 ELSE 0 END) AS ot,
+           SUM(CASE WHEN sponsorship_type='INSTALLMENT' THEN 1 ELSE 0 END) AS inst,
+           MIN(created_at) AS first_at
+    FROM sponsors
+    WHERE status IN ('PENDING','PAID') ${where}
+    GROUP BY name, phone
+    ORDER BY first_at ASC
+  `;
   const [todayRes, totalRes] = await Promise.all([
-    db.execute({
-      sql: `
-        SELECT s.name, s.created_at, s.sponsorship_type, st.alias_name, st.grade
-        FROM sponsors s
-        JOIN students st ON st.id = s.student_id
-        WHERE s.created_at BETWEEN ? AND ?
-          AND s.status IN ('PENDING','PAID')
-        ORDER BY s.created_at ASC
-      `,
-      args: [startIso, endIso],
-    }),
-    db.execute(`
-      SELECT s.name, s.created_at, s.sponsorship_type, st.alias_name, st.grade
-      FROM sponsors s
-      JOIN students st ON st.id = s.student_id
-      WHERE s.status IN ('PENDING','PAID')
-      ORDER BY s.created_at ASC
-    `),
+    db.execute({ sql: groupSql('AND created_at BETWEEN ? AND ?'), args: [startIso, endIso] }),
+    db.execute(groupSql('')),
   ]);
 
-  const toApplicant = (r: Record<string, unknown>): BriefingApplicant => ({
-    name: String(r.name),
-    student_alias: String(r.alias_name),
-    student_grade: gradeToLabel(r.grade as Grade),
-    created_at: String(r.created_at),
-    sponsorship_type: (String(r.sponsorship_type) === 'INSTALLMENT' ? 'INSTALLMENT' : 'ONETIME') as SponsorshipType,
-  });
+  const toGroup = (r: Record<string, unknown>): BriefingApplicantGroup => {
+    const ot = Number(r.ot), inst = Number(r.inst);
+    return {
+      name: String(r.name),
+      count: Number(r.cnt),
+      type_label: ot && inst ? '혼합' : (ot ? '일시' : '분할'),
+      first_created_at: String(r.first_at),
+    };
+  };
 
-  const todayApplicants = todayRes.rows.map(r => toApplicant(r as Record<string, unknown>));
-  const totalApplicants = totalRes.rows.map(r => toApplicant(r as Record<string, unknown>));
+  const todayGroups = todayRes.rows.map(r => toGroup(r as Record<string, unknown>));
+  const totalGroups = totalRes.rows.map(r => toGroup(r as Record<string, unknown>));
 
   // ---- Build admin URL ----
   const adminUrl =
@@ -90,15 +87,15 @@ export async function GET(req: Request) {
   // ---- Send SMS ----
   try {
     const result = await sendAdminBriefing({
-      todayApplicants,
-      totalApplicants,
+      todayGroups,
+      totalGroups,
       adminUrl,
     });
     return NextResponse.json({
       ok: true,
       kstDate: `${kstY}-${String(kstM + 1).padStart(2, '0')}-${String(kstD).padStart(2, '0')}`,
-      todayCount: todayApplicants.length,
-      totalCount: totalApplicants.length,
+      todayCount: todayGroups.length,
+      totalCount: totalGroups.length,
       ...result,
     });
   } catch (err) {

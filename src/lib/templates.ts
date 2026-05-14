@@ -138,6 +138,15 @@ export function buildInstallmentReminderHtml(ctx: TemplateContext): string {
 /* ================================
  *  Daily Admin Briefing (LMS)
  * ================================ */
+/** 후원자별 그룹 (같은 name+phone 기준). count > 1 이면 다중 후원자. */
+export interface BriefingApplicantGroup {
+  name: string;
+  count: number;
+  type_label: '일시' | '분할' | '혼합';
+  first_created_at: string;
+}
+
+/** 호환성용 — 기존 코드에서 사용 가능하지만 신규 cron/test 라우트는 group을 전달. */
 export interface BriefingApplicant {
   name: string;
   student_alias: string;
@@ -147,8 +156,8 @@ export interface BriefingApplicant {
 }
 
 export interface BriefingContext {
-  todayApplicants: BriefingApplicant[];
-  totalApplicants: BriefingApplicant[];
+  todayGroups: BriefingApplicantGroup[];
+  totalGroups: BriefingApplicantGroup[];
   adminUrl: string;
 }
 
@@ -157,15 +166,15 @@ export function buildBriefingSubject(): string {
 }
 
 export function buildBriefingBody(ctx: BriefingContext): string {
-  const today = ctx.todayApplicants;
-  const total = ctx.totalApplicants;
+  const today = ctx.todayGroups;
+  const total = ctx.totalGroups;
 
-  const typeLabel = (t: SponsorshipType) => (t === 'INSTALLMENT' ? '분할' : '일시');
-  const fmtList = (rows: BriefingApplicant[]): string => {
+  const fmt = (g: BriefingApplicantGroup): string =>
+    g.count === 1 ? `${g.name} (${g.type_label})` : `${g.name} (${g.count}명, ${g.type_label})`;
+
+  const fmtList = (rows: BriefingApplicantGroup[]): string => {
     if (rows.length === 0) return '  (없음)';
-    return rows
-      .map((r, i) => `  ${i + 1}. ${r.name} (${typeLabel(r.sponsorship_type)})`)
-      .join('\n');
+    return rows.map((g, i) => `  ${i + 1}. ${fmt(g)}`).join('\n');
   };
 
   return [
