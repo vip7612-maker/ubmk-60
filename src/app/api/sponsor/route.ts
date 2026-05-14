@@ -90,6 +90,42 @@ export async function POST(request: Request) {
     sponsorshipType,
   });
 
+  // 발송 결과를 notifications 테이블에 기록 → admin 발송 이력에서 일시·분할 모두 노출
+  const firstInstallment = isInstallment ? 1 : null;   // 일시는 null, 분할은 1회차
+  await db.execute({
+    sql: `INSERT INTO notifications
+          (sponsor_id, channel, recipient, subject, body, installment_number, status, error_message)
+          VALUES (?, 'SMS', ?, ?, ?, ?, ?, ?)`,
+    args: [
+      newSponsorId, phone.trim(),
+      notify.emailSubject || '결연 신청 안내',
+      notify.smsBody || '',
+      firstInstallment,
+      notify.sms.sent ? 'SENT' : 'FAILED',
+      notify.sms.error ?? null,
+    ],
+  });
+  await db.execute({
+    sql: `INSERT INTO notifications
+          (sponsor_id, channel, recipient, subject, body, installment_number, status, error_message)
+          VALUES (?, 'EMAIL', ?, ?, ?, ?, ?, ?)`,
+    args: [
+      newSponsorId, email.trim(),
+      notify.emailSubject || '결연 신청 안내',
+      notify.smsBody || '',
+      firstInstallment,
+      notify.email.sent ? 'SENT' : 'FAILED',
+      notify.email.error ?? null,
+    ],
+  });
+  // 분할 후원이면 last_notified_at 갱신 (오늘 cron이 같은 회차 중복 발송 안 하도록)
+  if (isInstallment) {
+    await db.execute({
+      sql: "UPDATE sponsors SET last_notified_at = CURRENT_TIMESTAMP WHERE id = ?",
+      args: [newSponsorId],
+    });
+  }
+
   return NextResponse.json({
     success: true,
     sponsorshipType,
