@@ -102,7 +102,13 @@ async function dispatch(
       console.error('[notifications] SMS failed:', result.sms.error);
     }
   } else {
-    result.sms.error = 'Solapi env not configured';
+    const missing = [
+      !apiKey && 'SOLAPI_API_KEY',
+      !apiSecret && 'SOLAPI_API_SECRET',
+      !sender && 'SOLAPI_SENDER',
+    ].filter(Boolean).join(', ');
+    result.sms.error = `Solapi env not configured (missing: ${missing})`;
+    console.warn('[notifications]', result.sms.error);
   }
 
   // ---- Email via Resend ----
@@ -124,7 +130,13 @@ async function dispatch(
       console.error('[notifications] Email failed:', result.email.error);
     }
   } else {
-    result.email.error = 'Resend env not configured or email missing';
+    const missing = [
+      !resendKey && 'RESEND_API_KEY',
+      !fromEmail && 'EMAIL_FROM',
+      !toEmail && '수신자 이메일',
+    ].filter(Boolean).join(', ');
+    result.email.error = `Resend env not configured (missing: ${missing})`;
+    console.warn('[notifications]', result.email.error);
   }
 }
 
