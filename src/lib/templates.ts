@@ -68,6 +68,8 @@ export function buildInstallmentReminderSms(ctx: TemplateContext): string {
   const n = ctx.installmentNumber ?? 0;
   const total = ctx.installmentTotal ?? INSTALL_COUNT;
   const bank = ctx.bankAccount?.trim() || '* 입금 계좌는 별도 안내된 계좌로 입금 부탁드립니다.';
+  const phone = ctx.contactPhone?.trim() || '';
+  const email = ctx.contactEmail?.trim() || '';
   return [
     `[${PROJECT_NAME}] ${n}/${total}회 분할 입금 안내`,
     '',
@@ -80,6 +82,9 @@ export function buildInstallmentReminderSms(ctx: TemplateContext): string {
     bank,
     '',
     '입금이 확인되면 회차 진행 상황이 업데이트됩니다. 감사합니다 💛',
+    '',
+    phone ? `문의: ${phone}` : '',
+    email ? `회신: ${email}` : '',
   ].filter(Boolean).join('\n');
 }
 
@@ -117,6 +122,11 @@ export function buildInstallmentReminderHtml(ctx: TemplateContext): string {
         <tr><td style="padding:10px 0;color:#64748b;font-weight:600;border-top:1px solid #f1f5f9;">입금 계좌</td>
             <td style="padding:10px 0;font-weight:700;border-top:1px solid #f1f5f9;white-space:pre-line;">${escapeHtml(bank)}</td></tr>
       </table>
+    </div>
+    <div style="background:#f8fafc;border-radius:16px;margin-top:16px;padding:18px 24px;text-align:center;color:#64748b;font-size:13px;line-height:1.6;">
+      <p style="margin:0 0 6px;">문의/회신은 아래로 연락 주세요.</p>
+      ${ctx.contactPhone?.trim() ? `<p style="margin:0;">📞 ${escapeHtml(ctx.contactPhone.trim())}</p>` : ''}
+      ${ctx.contactEmail?.trim() ? `<p style="margin:0;">✉️ <a href="mailto:${escapeHtml(ctx.contactEmail.trim())}" style="color:#1d4ed8;text-decoration:none;">${escapeHtml(ctx.contactEmail.trim())}</a></p>` : ''}
     </div>
     <div style="text-align:center;margin-top:16px;padding:16px;color:#94a3b8;font-size:11px;line-height:1.6;">
       © 2026 크롬북 한 대, 공정한 교육기회<br/>몽골 울란바타르 UBMK 학교 후원 프로젝트

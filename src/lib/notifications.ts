@@ -114,6 +114,7 @@ async function dispatch(
   // ---- Email via Resend ----
   const resendKey = process.env.RESEND_API_KEY;
   const fromEmail = process.env.EMAIL_FROM;
+  const replyToEmail = process.env.CONTACT_EMAIL;   // 회신 처리용 (예: ubmkschool@gmail.com)
   if (resendKey && fromEmail && toEmail) {
     try {
       const resend = new Resend(resendKey);
@@ -122,6 +123,7 @@ async function dispatch(
         to: toEmail,
         subject: emailSubject,
         html: emailHtml,
+        ...(replyToEmail ? { replyTo: replyToEmail } : {}),
       });
       if (error) throw new Error(error.message || JSON.stringify(error));
       result.email.sent = true;
