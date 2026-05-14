@@ -1,6 +1,7 @@
 import 'server-only';
 import { SolapiMessageService } from 'solapi';
 import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 import {
   buildSmsBody, buildSmsSubject,
   buildEmailHtml, buildEmailSubject,
@@ -111,34 +112,61 @@ async function dispatch(
     console.warn('[notifications]', result.sms.error);
   }
 
-  // ---- Email via Resend ----
-  const resendKey = process.env.RESEND_API_KEY;
+  // ---- Email: Gmail SMTP 우선, 없으면 Resend로 fallback ----
+  const gmailUser = process.env.GMAIL_USER;
+  const gmailPass = process.env.GMAIL_APP_PASSWORD;
   const fromEmail = process.env.EMAIL_FROM;
   const replyToEmail = process.env.CONTACT_EMAIL;   // 회신 처리용 (예: ubmkschool@gmail.com)
-  if (resendKey && fromEmail && toEmail) {
+
+  if (gmailUser && gmailPass && toEmail) {
+    // === Gmail SMTP (Nodemailer) — 도메인 인증 불요, 누구에게나 발송 ===
     try {
-      const resend = new Resend(resendKey);
-      const { error } = await resend.emails.send({
-        from: fromEmail,
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: { user: gmailUser, pass: gmailPass },
+      });
+      // Gmail SMTP는 자기 계정만 발신자로 허용 — EMAIL_FROM에 다른 도메인이 들어있어도
+      // 강제로 GMAIL_USER 주소로 발신 (display name만 'UBMK 후원'으로 표기).
+      await transporter.sendMail({
+        from: `UBMK 후원 <${gmailUser}>`,
         to: toEmail,
+        replyTo: replyToEmail,
         subject: emailSubject,
         html: emailHtml,
-        ...(replyToEmail ? { replyTo: replyToEmail } : {}),
       });
-      if (error) throw new Error(error.message || JSON.stringify(error));
       result.email.sent = true;
     } catch (err) {
-      result.email.error = err instanceof Error ? err.message : 'Email send failed';
-      console.error('[notifications] Email failed:', result.email.error);
+      result.email.error = err instanceof Error ? err.message : 'Gmail SMTP send failed';
+      console.error('[notifications] Gmail SMTP failed:', result.email.error);
     }
   } else {
-    const missing = [
-      !resendKey && 'RESEND_API_KEY',
-      !fromEmail && 'EMAIL_FROM',
-      !toEmail && '수신자 이메일',
-    ].filter(Boolean).join(', ');
-    result.email.error = `Resend env not configured (missing: ${missing})`;
-    console.warn('[notifications]', result.email.error);
+    // === Fallback: Resend ===
+    const resendKey = process.env.RESEND_API_KEY;
+    if (resendKey && fromEmail && toEmail) {
+      try {
+        const resend = new Resend(resendKey);
+        const { error } = await resend.emails.send({
+          from: fromEmail,
+          to: toEmail,
+          subject: emailSubject,
+          html: emailHtml,
+          ...(replyToEmail ? { replyTo: replyToEmail } : {}),
+        });
+        if (error) throw new Error(error.message || JSON.stringify(error));
+        result.email.sent = true;
+      } catch (err) {
+        result.email.error = err instanceof Error ? err.message : 'Email send failed';
+        console.error('[notifications] Email failed:', result.email.error);
+      }
+    } else {
+      const missing = [
+        !resendKey && !gmailUser && 'GMAIL_USER 또는 RESEND_API_KEY',
+        !fromEmail && 'EMAIL_FROM',
+        !toEmail && '수신자 이메일',
+      ].filter(Boolean).join(', ');
+      result.email.error = `이메일 발송 환경 미설정 (missing: ${missing})`;
+      console.warn('[notifications]', result.email.error);
+    }
   }
 }
 
