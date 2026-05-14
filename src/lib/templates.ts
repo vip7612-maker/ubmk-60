@@ -143,6 +143,7 @@ export interface BriefingApplicant {
   student_alias: string;
   student_grade: string;
   created_at: string;
+  sponsorship_type: SponsorshipType;
 }
 
 export interface BriefingContext {
@@ -152,31 +153,32 @@ export interface BriefingContext {
 }
 
 export function buildBriefingSubject(): string {
-  return '[더넥스트펠로우십] 신청자 일일 브리핑';
+  return `[${PROJECT_NAME}] 신청자 일일 브리핑`;
 }
 
 export function buildBriefingBody(ctx: BriefingContext): string {
   const today = ctx.todayApplicants;
   const total = ctx.totalApplicants;
 
+  const typeLabel = (t: SponsorshipType) => (t === 'INSTALLMENT' ? '분할' : '일시');
   const fmtList = (rows: BriefingApplicant[]): string => {
-    if (rows.length === 0) return '없음';
+    if (rows.length === 0) return '  (없음)';
     return rows
-      .map((r, i) => `  ${i + 1}. ${r.name} → ${r.student_alias}(${r.student_grade})`)
+      .map((r, i) => `  ${i + 1}. ${r.name} (${typeLabel(r.sponsorship_type)})`)
       .join('\n');
   };
 
   return [
-    '더넥스트펠로우십 신청자 브리핑',
+    `[${PROJECT_NAME}]`,
+    '신청자 일일 브리핑',
     '',
-    `금일 신청자 (${today.length}명):`,
+    `▶ 금일 신청자 (${today.length}명)`,
     fmtList(today),
     '',
-    `누적 신청자 명단 (${total.length}명):`,
+    `▶ 누적 신청자 (${total.length}명, 금일 ${today.length}명 포함)`,
     fmtList(total),
     '',
-    `관리자페이지 링크:`,
-    ctx.adminUrl,
+    `관리자페이지: ${ctx.adminUrl}`,
   ].join('\n');
 }
 

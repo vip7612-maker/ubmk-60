@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { sendAdminBriefing } from '@/lib/notifications';
 import type { BriefingApplicant } from '@/lib/templates';
-import { gradeToLabel, type Grade } from '@/lib/types';
+import { gradeToLabel, type Grade, type SponsorshipType } from '@/lib/types';
 
 export const runtime = 'nodejs';
 // Cron only — no caching
@@ -52,7 +52,7 @@ export async function GET(req: Request) {
   const [todayRes, totalRes] = await Promise.all([
     db.execute({
       sql: `
-        SELECT s.name, s.created_at, st.alias_name, st.grade
+        SELECT s.name, s.created_at, s.sponsorship_type, st.alias_name, st.grade
         FROM sponsors s
         JOIN students st ON st.id = s.student_id
         WHERE s.created_at BETWEEN ? AND ?
@@ -62,7 +62,7 @@ export async function GET(req: Request) {
       args: [startIso, endIso],
     }),
     db.execute(`
-      SELECT s.name, s.created_at, st.alias_name, st.grade
+      SELECT s.name, s.created_at, s.sponsorship_type, st.alias_name, st.grade
       FROM sponsors s
       JOIN students st ON st.id = s.student_id
       WHERE s.status IN ('PENDING','PAID')
@@ -75,6 +75,7 @@ export async function GET(req: Request) {
     student_alias: String(r.alias_name),
     student_grade: gradeToLabel(r.grade as Grade),
     created_at: String(r.created_at),
+    sponsorship_type: (String(r.sponsorship_type) === 'INSTALLMENT' ? 'INSTALLMENT' : 'ONETIME') as SponsorshipType,
   });
 
   const todayApplicants = todayRes.rows.map(r => toApplicant(r as Record<string, unknown>));
