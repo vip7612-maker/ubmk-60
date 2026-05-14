@@ -141,6 +141,7 @@ export function buildInstallmentReminderHtml(ctx: TemplateContext): string {
 /** 후원자별 그룹 (같은 name+phone 기준). count > 1 이면 다중 후원자. */
 export interface BriefingApplicantGroup {
   name: string;
+  phone: string;
   count: number;
   type_label: '일시' | '분할' | '혼합';
   first_created_at: string;
@@ -158,6 +159,8 @@ export interface BriefingApplicant {
 export interface BriefingContext {
   todayGroups: BriefingApplicantGroup[];
   totalGroups: BriefingApplicantGroup[];
+  /** 학생 기준: 결연 완료(students.status = 'COMPLETED') 수 */
+  completedStudents: number;
   adminUrl: string;
 }
 
@@ -169,23 +172,26 @@ export function buildBriefingBody(ctx: BriefingContext): string {
   const today = ctx.todayGroups;
   const total = ctx.totalGroups;
 
-  const fmt = (g: BriefingApplicantGroup): string =>
+  // 본 함수는 후원자 정보를 표시 — 금일 라인에는 연락처 포함 (회신/문자 발송 편의).
+  const groupBase = (g: BriefingApplicantGroup): string =>
     g.count === 1 ? `${g.name} (${g.type_label})` : `${g.name} (${g.count}명, ${g.type_label})`;
+  const fmtToday = (g: BriefingApplicantGroup) => `${groupBase(g)} ${g.phone}`;
+  const fmtTotal = (g: BriefingApplicantGroup) => groupBase(g);
 
-  const fmtList = (rows: BriefingApplicantGroup[]): string => {
-    if (rows.length === 0) return '  (없음)';
-    return rows.map((g, i) => `  ${i + 1}. ${fmt(g)}`).join('\n');
-  };
+  const fmtListToday = (rows: BriefingApplicantGroup[]) =>
+    rows.length === 0 ? '  (없음)' : rows.map((g, i) => `  ${i + 1}. ${fmtToday(g)}`).join('\n');
+  const fmtListTotal = (rows: BriefingApplicantGroup[]) =>
+    rows.length === 0 ? '  (없음)' : rows.map((g, i) => `  ${i + 1}. ${fmtTotal(g)}`).join('\n');
 
   return [
     `[${PROJECT_NAME}]`,
     '신청자 일일 브리핑',
     '',
     `▶ 금일 신청자 (${today.length}명)`,
-    fmtList(today),
+    fmtListToday(today),
     '',
-    `▶ 누적 신청자 (${total.length}명, 금일 ${today.length}명 포함)`,
-    fmtList(total),
+    `▶ 누적 신청자 ${total.length}명 (금일 ${today.length}명 포함) · 누적 결연자 ${ctx.completedStudents}명`,
+    fmtListTotal(total),
     '',
     `관리자페이지: ${ctx.adminUrl}`,
   ].join('\n');

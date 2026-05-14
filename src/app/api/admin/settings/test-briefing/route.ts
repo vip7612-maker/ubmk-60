@@ -38,15 +38,18 @@ export async function POST() {
     GROUP BY name, phone
     ORDER BY first_at ASC
   `;
-  const [todayRes, totalRes] = await Promise.all([
+  const [todayRes, totalRes, completedRes] = await Promise.all([
     db.execute({ sql: groupSql('AND created_at BETWEEN ? AND ?'), args: [startIso, endIso] }),
     db.execute(groupSql('')),
+    db.execute("SELECT COUNT(*) AS c FROM students WHERE status = 'COMPLETED'"),
   ]);
+  const completedStudents = Number(completedRes.rows[0]?.c ?? 0);
 
   const toGroup = (r: Record<string, unknown>): BriefingApplicantGroup => {
     const ot = Number(r.ot), inst = Number(r.inst);
     return {
       name: String(r.name),
+      phone: String(r.phone),
       count: Number(r.cnt),
       type_label: ot && inst ? '혼합' : (ot ? '일시' : '분할'),
       first_created_at: String(r.first_at),
@@ -61,12 +64,13 @@ export async function POST() {
     '/admin/sponsors';
 
   try {
-    const result = await sendAdminBriefing({ todayGroups, totalGroups, adminUrl });
+    const result = await sendAdminBriefing({ todayGroups, totalGroups, completedStudents, adminUrl });
     return NextResponse.json({
       ok: true,
       ...result,
       todayCount: todayGroups.length,
       totalCount: totalGroups.length,
+      completedStudents,
     });
   } catch (err) {
     return NextResponse.json(

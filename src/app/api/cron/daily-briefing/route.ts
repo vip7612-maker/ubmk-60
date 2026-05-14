@@ -60,15 +60,18 @@ export async function GET(req: Request) {
     GROUP BY name, phone
     ORDER BY first_at ASC
   `;
-  const [todayRes, totalRes] = await Promise.all([
+  const [todayRes, totalRes, completedRes] = await Promise.all([
     db.execute({ sql: groupSql('AND created_at BETWEEN ? AND ?'), args: [startIso, endIso] }),
     db.execute(groupSql('')),
+    db.execute("SELECT COUNT(*) AS c FROM students WHERE status = 'COMPLETED'"),
   ]);
+  const completedStudents = Number(completedRes.rows[0]?.c ?? 0);
 
   const toGroup = (r: Record<string, unknown>): BriefingApplicantGroup => {
     const ot = Number(r.ot), inst = Number(r.inst);
     return {
       name: String(r.name),
+      phone: String(r.phone),
       count: Number(r.cnt),
       type_label: ot && inst ? '혼합' : (ot ? '일시' : '분할'),
       first_created_at: String(r.first_at),
@@ -89,6 +92,7 @@ export async function GET(req: Request) {
     const result = await sendAdminBriefing({
       todayGroups,
       totalGroups,
+      completedStudents,
       adminUrl,
     });
     return NextResponse.json({
@@ -96,6 +100,7 @@ export async function GET(req: Request) {
       kstDate: `${kstY}-${String(kstM + 1).padStart(2, '0')}-${String(kstD).padStart(2, '0')}`,
       todayCount: todayGroups.length,
       totalCount: totalGroups.length,
+      completedStudents,
       ...result,
     });
   } catch (err) {
