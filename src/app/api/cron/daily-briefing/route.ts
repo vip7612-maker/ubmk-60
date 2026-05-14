@@ -31,17 +31,20 @@ export async function GET(req: Request) {
     if (!ok) return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
 
-  // ---- Determine "today" window in KST (UTC+9) ----
-  // We compute the KST calendar date based on the current UTC instant,
-  // then find the UTC instants for 00:00 and 24:00 KST.
+  // ---- Determine briefing window (KST) ----
+  // 브리핑은 매일 KST 18:00에 발송되며, 직전 마감(어제 18:00) ~ 현재 마감(오늘 18:00)
+  // 신청자를 '금일 신청자'로 본다. 이렇게 해야 KST 18:00 이후에 신청한 사람도
+  // 다음날 브리핑에 누락 없이 잡힌다.
   const now = new Date();
   const kstOffsetMs = 9 * 60 * 60 * 1000;
   const kstNow = new Date(now.getTime() + kstOffsetMs);
   const kstY = kstNow.getUTCFullYear();
   const kstM = kstNow.getUTCMonth();
   const kstD = kstNow.getUTCDate();
-  const startUtc = new Date(Date.UTC(kstY, kstM, kstD, 0, 0, 0) - kstOffsetMs);
-  const endUtc   = new Date(Date.UTC(kstY, kstM, kstD, 23, 59, 59) - kstOffsetMs);
+  // 오늘 KST 18:00 의 UTC 인스턴트 (마감)
+  const endUtc   = new Date(Date.UTC(kstY, kstM, kstD, 18, 0, 0) - kstOffsetMs);
+  // 어제 KST 18:00 의 UTC 인스턴트 (직전 마감)
+  const startUtc = new Date(endUtc.getTime() - 24 * 60 * 60 * 1000);
   const startIso = startUtc.toISOString().replace('T', ' ').slice(0, 19);
   const endIso   = endUtc.toISOString().replace('T', ' ').slice(0, 19);
 

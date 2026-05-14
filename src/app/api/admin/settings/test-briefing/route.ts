@@ -14,15 +14,15 @@ export const runtime = 'nodejs';
 export async function POST() {
   const db = getDb();
 
-  // KST today window
+  // 브리핑 윈도우: 어제 KST 18:00 ~ 오늘 KST 18:00 (cron과 동일)
   const now = new Date();
   const kstOffsetMs = 9 * 60 * 60 * 1000;
   const kstNow = new Date(now.getTime() + kstOffsetMs);
   const kstY = kstNow.getUTCFullYear();
   const kstM = kstNow.getUTCMonth();
   const kstD = kstNow.getUTCDate();
-  const startUtc = new Date(Date.UTC(kstY, kstM, kstD, 0, 0, 0) - kstOffsetMs);
-  const endUtc   = new Date(Date.UTC(kstY, kstM, kstD, 23, 59, 59) - kstOffsetMs);
+  const endUtc   = new Date(Date.UTC(kstY, kstM, kstD, 18, 0, 0) - kstOffsetMs);
+  const startUtc = new Date(endUtc.getTime() - 24 * 60 * 60 * 1000);
   const startIso = startUtc.toISOString().replace('T', ' ').slice(0, 19);
   const endIso   = endUtc.toISOString().replace('T', ' ').slice(0, 19);
 

@@ -187,7 +187,7 @@ export function buildBriefingBody(ctx: BriefingContext): string {
     `[${PROJECT_NAME}]`,
     '신청자 일일 브리핑',
     '',
-    `▶ 금일 신청자 (${today.length}명)`,
+    `▶ 금일 신청자 — 전일 18시 ~ 금일 18시 (${today.length}명)`,
     fmtListToday(today),
     '',
     `▶ 누적 신청자 ${total.length}명 (금일 ${today.length}명 포함) · 누적 결연자 ${ctx.completedStudents}명`,
